@@ -1,1 +1,37 @@
+:root {
+    --primary: #0056b3;
+    --bg: #f4f6f8;
+    --text: #333;
+    --border: #ddd;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+}
 
+body { font-family: system-ui, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+header { background: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+header h1 { margin: 0; font-size: 1.5rem; }
+#status-bar { display: flex; align-items: center; gap: 15px; font-size: 0.9rem; }
+
+.container { display: flex; height: calc(100vh - 70px); }
+#sidebar { width: 300px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+#sidebar nav ul { list-style: none; padding: 0; margin: 0; }
+#sidebar nav li a { display: block; padding: 15px 20px; text-decoration: none; color: var(--text); border-bottom: 1px solid var(--border); }
+#sidebar nav li a.active { background: var(--primary); color: #fff; }
+#sidebar nav li a:hover { background: #e9ecef; }
+
+#guida-box { margin-top: auto; padding: 20px; background: #e2e3e5; border-top: 1px solid var(--border); }
+#guida-box h3 { margin-top: 0; font-size: 1rem; }
+#guida-box p { font-size: 0.9rem; margin-bottom: 10px; }
+#guida-box button { width: 100%; padding: 10px; background: var(--primary); color: #fff; border: none; cursor: pointer; }
+
+#main-content { flex: 1; padding: 30px; overflow-y: auto; }
+.view { display: none; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid var(--border); }
+.view.active { display: block; }
+
+button { padding: 8px 15px; cursor: pointer; background: var(--primary); color: #fff; border: none; border-radius: 4px; }
+button:hover { opacity: 0.9; }
+input, select { padding: 8px; border: 1px solid var(--border); border-radius: 4px; width: 100%; box-sizing: border-box; margin-bottom: 15px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+.error { color: var(--danger); font-size: 0.8rem; margin-top: 5px; display: block; }
