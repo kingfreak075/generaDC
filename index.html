@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DC Generator v6.3 - Documentazione Tecnica</title>
+    <style>
+        :root {
+            --primary: #3498db; --primary-dark: #2980b9; --success: #2ecc71; --success-dark: #27ae60;
+            --danger: #e74c3c; --warning: #f39c12; --dark: #2c3e50; --gray: #7f8c8d;
+            --light: #f0f2f5; --white: #ffffff; --border: #e0e0e0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* HEADER */
+        .header { background: linear-gradient(135deg, #1a2a6c, #2d4373); color: #fff; padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .logo h1 { font-size: 24px; font-weight: 700; }
+        .logo .subtitle { font-size: 12px; opacity: 0.8; }
+        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        /* BUTTONS */
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-success { background: var(--success); color: #fff; }
+        .btn-success:hover:not(:disabled) { background: var(--success-dark); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover:not(:disabled) { background: var(--primary); color: #fff; }
+        .btn-white { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-white:hover { background: rgba(255,255,255,0.25); }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-ghost { background: transparent; color: var(--gray); border: 1px solid var(--border); }
+
+        /* CARDS & VIEWS */
+        .card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* DASHBOARD */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
+        .quick-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; }
+        .stat-item { text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px; }
+        .stat-item .number { font-size: 28px; font-weight: 700; color: var(--dark); }
+        .stat-item .label { font-size: 12px; color: var(--gray); }
+        .recent-item { padding: 12px 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; border-radius: 6px; }
+        .recent-item:hover { background: #f8f9fa; }
+
+        /* WIZARD */
+        .wizard-container { background: var(--white); border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 30px; margin: 20px 0; }
+        .wizard-progress { display: flex; justify-content: space-between; margin-bottom: 35px; position: relative; padding: 0 20px; }
+        .wizard-progress::before { content: ''; position: absolute; top: 20px; left: 50px; right: 50px; height: 3px; background: var(--border); z-index: 0; border-radius: 2px; }
+        .step { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; flex: 1; }
+        .step-number { width: 40px; height: 40px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #999; transition: all 0.4s ease; font-size: 16px; }
+        .step.active .step-number { background: var(--primary); color: #fff; transform: scale(1.05); }
+        .step.completed .step-number { background: var(--success); color: #fff; }
+        .step-label { font-size: 12px; margin-top: 8px; color: #999; font-weight: 500; text-align: center; }
+        .step.active .step-label { color: var(--primary); font-weight: 600; }
+        .step.completed .step-label { color: var(--success); }
+        .step-content { display: none; animation: fadeIn 0.4s ease; }
+        .step-content.active { display: block; }
+        .step-header { margin-bottom: 25px; }
+        .step-header h2 { font-size: 24px; color: var(--dark); }
+        .step-header p { color: var(--gray); font-size: 15px; }
+        .step-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0; flex-wrap: wrap; gap: 10px; }
+
+        /* FORMS */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-size: 14px; font-weight: 600; margin-bottom: 5px; color: var(--dark); }
+        .form-group .required { color: var(--danger); }
+        .form-group .hint { font-size: 11px; color: var(--gray); margin-top: 3px; font-style: italic; }
+        .form-group input, .form-group select { padding: 10px 14px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; transition: all 0.3s ease; background: #fafafa; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); background: #fff; }
+        .form-group input.error, .form-group select.error { border-color: var(--danger); background: #fff5f5; }
+
+        /* INTERVENTI */
+        .search-box { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .search-box input { flex: 1; padding: 12px 18px; border: 2px solid var(--border); border-radius: 8px; font-size: 16px; min-width: 200px; }
+        .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filters select { padding: 8px 14px; border: 2px solid var(--border); border-radius: 8px; background: #fafafa; font-size: 14px; cursor: pointer; }
+        .results-grid { display: grid; grid-template-columns: 1fr; gap: 10px; max-height: 520px; overflow-y: auto; margin-bottom: 20px; padding-right: 5px; }
+        .intervention-item { padding: 12px 16px; background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px; transition: all 0.2s ease; }
+        .intervention-item:hover { background: #eef4fb; border-color: var(--primary); }
+        .intervention-item.selected { background: #d4edda; border-color: #28a745; }
+        .intervention-item .item-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; cursor: pointer; }
+        .intervention-item .item-title { font-weight: 600; font-size: 14px; flex: 1; }
+        .intervention-item .item-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+        .badge-verbo { background: #1abc9c; color: #fff; }
+        .badge-gruppo { background: #6c757d; color: #fff; }
+        .badge-modulo { background: var(--primary); color: #fff; }
+        .badge-cds { background: var(--warning); color: #fff; }
+        .badge-domande { background: #9b59b6; color: #fff; }
+        .badge-consiglio { background: #16a085; color: #fff; }
+        .badge-norma { background: #34495e; color: #fff; }
+        .item-actions { display: flex; gap: 6px; align-items: center; }
+        .btn-info-icon { background: #eaf4fb; color: var(--primary); border: 1px solid var(--primary); border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 13px; font-weight: 600; }
+        .btn-info-icon:hover { background: var(--primary); color: #fff; }
+        .btn-select { background: #fff; color: var(--primary); border: 1px solid var(--primary); border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .btn-select:hover { background: var(--primary); color: #fff; }
+        .btn-select.is-selected { background: #28a745; color: #fff; border-color: #28a745; }
+
+        /* DETTAGLIO INLINE */
+        .intervention-detail { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed #cfd6dd; }
+        .intervention-detail.open { display: block; }
+        .detail-section { margin-bottom: 14px; }
+        .detail-section:last-child { margin-bottom: 0; }
+        .detail-section h6 { font-size: 12px; text-transform: uppercase; color: var(--gray); letter-spacing: 0.5px; margin-bottom: 6px; }
+        .detail-norma { font-size: 13px; margin-bottom: 4px; }
+        .detail-norma strong { color: var(--dark); }
+        .detail-consiglio { background: #fff8e1; border-left: 3px solid var(--warning); padding: 8px 12px; border-radius: 4px; font-size: 13px; margin-bottom: 6px; }
+        .detail-empty { color: #999; font-size: 13px; font-style: italic; }
+
+        /* SELEZIONATI */
+        .selected-interventions { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 2px dashed #ccc; }
+        .selected-interventions .sel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+        .selected-interventions h4 { font-size: 15px; }
+        .selected-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .selected-tag { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; background: var(--primary); color: #fff; border-radius: 16px; font-size: 12px; max-width: 100%; }
+        .selected-tag .remove { cursor: pointer; font-weight: bold; opacity: 0.85; padding: 0 2px; }
+        .selected-tag .remove:hover { opacity: 1; color: #ffcccc; }
+        .selected-tag .tag-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
+
+        /* SCHEDE LAVORO */
+        .scheda-intervento { border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 15px; background: #fff; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .scheda-header { background: #f8f9fa; padding: 15px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; gap: 10px; }
+        .scheda-header:hover { background: #eef1f4; }
+        .scheda-header h4 { margin: 0; color: var(--dark); font-size: 15px; }
+        .scheda-header .scheda-meta { font-size: 12px; color: #666; margin-top: 3px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .scheda-body { padding: 20px; display: none; }
+        .scheda-body.active { display: block; }
+        .scheda-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #eee; }
+        .scheda-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .scheda-section h5 { font-size: 13px; color: var(--gray); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+        .norma-line { font-size: 13px; padding: 6px 10px; background: #f4f6f8; border-radius: 6px; margin-bottom: 6px; }
+        .norma-line strong { color: var(--dark); }
+        .modulo-line { font-size: 13px; padding: 6px 10px; background: #eaf4fb; border-radius: 6px; margin-bottom: 6px; }
+        .modulo-line.condizionale { background: #fff8e1; }
+        .modulo-line .firme { font-size: 11px; color: #666; display: block; margin-top: 2px; }
+        .domanda-box { margin-bottom: 12px; display: flex; flex-direction: column; }
+        .domanda-box label { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .domanda-box .domanda-help { font-size: 11px; color: #888; margin-top: 2px; }
+        .domanda-box input[type="text"], .domanda-box input[type="number"], .domanda-box select { padding: 6px 10px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; max-width: 360px; }
+        .domanda-box .radio-row { display: flex; gap: 15px; }
+        .domanda-box .radio-row label { font-weight: 400; font-size: 13px; display: flex; align-items: center; gap: 4px; }
+        .cds-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 12px; }
+        .cds-table th, .cds-table td { padding: 6px 8px; border: 1px solid #eee; text-align: left; }
+        .cds-table th { background: #f8f9fa; }
+        .cds-form { background: #f8f9fa; padding: 12px; border-radius: 6px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .cds-form input, .cds-form select { padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; width: 100%; }
+        .cds-form .full { grid-column: 1 / -1; text-align: right; }
+        .materiali-richiesti { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+        .materiale-richiesto { font-size: 11px; padding: 3px 10px; border-radius: 12px; background: #fff3cd; color: #856404; border: 1px solid #ffe0a3; }
+        .materiale-richiesto.obbligatorio { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+        .materiale-richiesto .cert { font-weight: 700; }
+        .consiglio-box { background: #fff8e1; border-left: 3px solid var(--warning); padding: 8px 12px; border-radius: 4px; font-size: 13px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .status-pill { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+        .status-pill.ok { background: #d4edda; color: #155724; }
+        .status-pill.warn { background: #fff3cd; color: #856404; }
+        .status-pill.miss { background: #f8d7da; color: #721c24; }
+
+        /* RIEPILOGO */
+        .riepilogo-section { margin-bottom: 20px; }
+        .riepilogo-section h4 { color: var(--dark); border-bottom: 2px solid var(--success); padding-bottom: 8px; margin-bottom: 12px; }
+        .riepilogo-doc { display: flex; flex-wrap: wrap; gap: 8px; }
+        .riepilogo-doc .doc-tag { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+        .riepilogo-doc .doc-tag.obbligatorio { background: var(--primary); color: #fff; }
+        .riepilogo-doc .doc-tag.condizionale { background: var(--warning); color: #fff; }
+        .riepilogo-list { list-style: none; padding-left: 0; }
+        .riepilogo-list li { font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
+        .riepilogo-list li:last-child { border-bottom: none; }
+
+        /* NOTIFICHE */
+        .notification { padding: 15px 20px; border-radius: 6px; margin-bottom: 15px; display: none; font-weight: 500; position: sticky; top: 80px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .notification.error { display: block; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .notification.success { display: block; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .notification.info { display: block; background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .empty { color: #999; text-align: center; padding: 30px; }
+
+        /* MODALE CONSIGLIO */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: #fff; border-radius: 10px; max-width: 480px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); overflow: hidden; }
+        .modal-box .modal-head { background: #fff8e1; padding: 14px 18px; border-bottom: 1px solid #ffe0a3; display: flex; justify-content: space-between; align-items: center; }
+        .modal-box .modal-head h3 { font-size: 15px; color: #856404; }
+        .modal-box .modal-body { padding: 18px; font-size: 14px; color: #333; }
+        .modal-box .modal-foot { padding: 12px 18px; border-top: 1px solid #eee; text-align: right; }
+        .modal-close { background: transparent; border: none; font-size: 18px; cursor: pointer; color: #856404; }
+
+        /* BANNER BLOCCO */
+        .block-banner { background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 15px 20px; margin-bottom: 15px; }
+        .block-banner h5 { color: #856404; margin-bottom: 6px; }
+        .block-banner ul { list-style: none; padding-left: 0; font-size: 13px; color: #664d03; }
+        .block-banner li { padding: 2px 0; }
+        .block-banner li::before { content: '⚠️ '; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <h1>📄 DC Generator v6.3</h1>
+                <span class="subtitle">Generazione Dichiarazioni di Conformità</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-white" onclick="app.caricaCommessa()">📂 Carica Commessa</button>
+                <button class="btn btn-primary" onclick="app.nuovaCommessa()">➕ Nuova Commessa</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="main">
+    <div class="container">
+        <div id="notification" class="notification"></div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="view active">
+            <div class="dashboard-grid">
+                <div class="card welcome-card">
+                    <h2>👋 Benvenuto</h2>
+                    <p>Crea una nuova Dichiarazione di Conformità guidata.</p>
+                    <div class="quick-actions">
+                        <button class="btn btn-success" onclick="app.nuovaCommessa()">➕ Nuova Commessa</button>
+                        <button class="btn btn-outline" onclick="app.caricaEsempio()">📂 Carica Esempio</button>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item"><div class="number" id="dash-interventi">0</div><div class="label">Interventi</div></div>
+                        <div class="stat-item"><div class="number" id="dash-gruppi">0</div><div class="label">Gruppi</div></div>
+                        <div class="stat-item"><div class="number" id="dash-moduli">0</div><div class="label">Moduli</div></div>
+                        <div class="stat-item"><div class="number" id="dash-commesse">0</div><div class="label">Salvate</div></div>
+                    </div>
+                </div>
+                <div class="card recent-card">
+                    <h3>📁 Commesse recenti</h3>
+                    <div id="recenti"><p class="empty">Nessuna commessa recente.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WIZARD -->
+        <div id="wizard" class="view">
+            <div class="wizard-container">
+                <div class="wizard-progress">
+                    <div class="step active" data-step="1"><span class="step-number">1</span><span class="step-label">Impianto</span></div>
+                    <div class="step" data-step="2"><span class="step-number">2</span><span class="step-label">Lavorazione</span></div>
+                    <div class="step" data-step="3"><span class="step-number">3</span><span class="step-label">Interventi</span></div>
+                    <div class="step" data-step="4"><span class="step-number">4</span><span class="step-label">Schede Lavoro</span></div>
+                    <div class="step" data-step="5"><span class="step-number">5</span><span class="step-label">Riepilogo</span></div>
+                </div>
+
+                <div class="wizard-content">
+                    <!-- STEP 1 -->
+                    <div id="step-1" class="step-content active">
+                        <div class="step-header">
+                            <h2>🏢 Anagrafica Impianto</h2>
+                            <p>Inserisci i dati. I campi con <span class="required">*</span> sono obbligatori.</p>
+                        </div>
+                        <div class="step-body">
+                            <div id="form-anagrafica" class="form-grid"></div>
+                        </div>
+                        <div class="step-footer">
+                            <button class="btn btn-outline" onclick="app.tornaDashboard()">← Dashboard</button>
+                            <button class="btn btn-primary" onclick="app.nextStep()">Continua →</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 -->
+                    <div id="step-2" class="step-content">
+                        <div class="step-header">
+                            <h2>🔧 Tipo di Lavorazione</h2>
+                            <p>Seleziona il tipo per filtrare gli interventi.</p>
+                        </div>
+                        <div class="step-body">
+                            <div class="form-group full-width" style="max-width:500px;margin:0 auto;">
+                                <label>Tipo Lavorazione <span class="required">*</span></label>
+                                <select id="tipo_lavorazione" style="font-size:18px;padding:15px;">
+                                    <option value="">-- Seleziona --</option>
+                                    <option value="Manut. Straordinaria">Manutenzione Straordinaria</option>
+                                    <option value="N.I. Ascensore">Nuovo Impianto Ascensore</option>
+                                    <option value="N.I. Macchina">Nuovo Impianto Macchina</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="step-footer">
+                            <button class="btn btn-outline" onclick="app.prevStep()">← Indietro</button>
+                            <button class="btn btn-primary" onclick="app.nextStep()">Continua →</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3 -->
+                    <div id="step-3" class="step-content">
+                        <div class="step-header">
+                            <h2>🛠️ Selezione Interventi</h2>
+                            <p>Cerca e seleziona gli interventi. Clicca ℹ️ per il dettaglio completo.</p>
+                        </div>
+                        <div class="step-body">
+                            <div class="search-box">
+                                <input type="text" id="ricerca_intervento" placeholder="Cerca per descrizione, verbo, gruppo, normativa, modulo..." onkeypress="if(event.key==='Enter') app.cercaInterventi()">
+                                <button class="btn btn-primary" onclick="app.cercaInterventi()">🔍 Cerca</button>
+                            </div>
+                            <div class="filters">
+                                <select id="filtro_verbo" onchange="app.cercaInterventi()"><option value="">Tutti i verbi</option></select>
+                                <select id="filtro_gruppo" onchange="app.cercaInterventi()"><option value="">Tutti i gruppi</option></select>
+                            </div>
+                            <div id="risultati_interventi" class="results-grid"></div>
+                            <div class="selected-interventions">
+                                <div class="sel-header">
+                                    <h4>📌 Selezionati (<span id="selected-count">0</span>)</h4>
+                                    <button class="btn btn-sm btn-ghost" onclick="app.svuotaSelezione()">🗑️ Svuota</button>
+                                </div>
+                                <div id="selected-list" class="selected-tags"><p style="color:#999;font-size:14px;">Nessun intervento selezionato.</p></div>
+                            </div>
+                        </div>
+                        <div class="step-footer">
+                            <button class="btn btn-outline" onclick="app.prevStep()">← Indietro</button>
+                            <button class="btn btn-primary" onclick="app.nextStep()">Continua →</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4 -->
+                    <div id="step-4" class="step-content">
+                        <div class="step-header">
+                            <h2>📝 Schede di Lavoro</h2>
+                            <p>Compila i dettagli per ogni intervento selezionato.</p>
+                        </div>
+                        <div class="step-body">
+                            <div id="schede-container"></div>
+                        </div>
+                        <div class="step-footer">
+                            <button class="btn btn-outline" onclick="app.prevStep()">← Indietro</button>
+                            <button class="btn btn-primary" onclick="app.nextStep()">Vai al Riepilogo →</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5 -->
+                    <div id="step-5" class="step-content">
+                        <div class="step-header">
+                            <h2>📋 Riepilogo e Generazione</h2>
+                            <p>Verifica e genera.</p>
+                        </div>
+                        <div class="step-body">
+                            <div id="riepilogo-container"></div>
+                        </div>
+                        <div class="step-footer">
+                            <button class="btn btn-outline" onclick="app.prevStep()">← Indietro</button>
+                            <div style="display:flex; gap:10px;">
+                                <button class="btn btn-primary" onclick="app.salvaCommessa()">💾 Salva Bozza</button>
+                                <button class="btn btn-success" onclick="app.generaDocumenti()">📥 Emetti DC</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GENERATION -->
+        <div id="generation" class="view">
+            <div class="card success-card" style="text-align:center; padding:50px;">
+                <h2 style="color:var(--success); font-size:32px;">✅ Documenti Generati!</h2>
+                <p id="download-message" style="margin:20px 0; font-size:16px;"></p>
+                <div style="display:flex; gap:15px; justify-content:center;">
+                    <button class="btn btn-primary" onclick="app.downloadJSON()">📥 Scarica JSON</button>
+                    <button class="btn btn-outline" onclick="app.tornaDashboard()">🏠 Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- MODALE CONSIGLIO -->
+<div id="modal-consiglio" class="modal-overlay" onclick="if(event.target===this) app.chiudiModaleConsiglio()">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3>ℹ️ Consiglio</h3>
+            <button class="modal-close" onclick="app.chiudiModaleConsiglio()">✕</button>
+        </div>
+        <div class="modal-body" id="modal-consiglio-body"></div>
+        <div class="modal-foot">
+            <button class="btn btn-sm btn-primary" onclick="app.chiudiModaleConsiglio()">Chiudi</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// VARIABILI GLOBALI
+// ============================================================
+let ANAGRAFICA = null;
+let CATALOGO = null;
+const LS_KEY_CATALOGO = 'catalogo_interventi_v2'; // bump versione
+
+// ============================================================
+// CARICAMENTO DATI
+// ============================================================
+async function caricaAnagrafica() {
+    try {
+        const res = await fetch('data/anagrafica.json');
+        if (!res.ok) throw new Error('File non trovato');
+        ANAGRAFICA = await res.json();
+        console.log('✅ Anagrafica caricata:', Object.keys(ANAGRAFICA?.campi || {}).length, 'campi');
+        return true;
+    } catch (e) {
+        console.warn('⚠️ anagrafica.json non caricato:', e.message);
+        ANAGRAFICA = null;
+        return false;
+    }
+}
+
+async function caricaCatalogo() {
+    // 1) Prova localStorage (solo se valido)
+    const saved = localStorage.getItem(LS_KEY_CATALOGO);
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            if (isCatalogoValido(data)) {
+                CATALOGO = data;
+                console.log('📦 Catalogo da localStorage:', CATALOGO.catalogo.interventi.length, 'interventi');
+                return true;
+            }
+            console.warn('⚠️ Catalogo localStorage non valido, ri-normalizzo da file');
+            localStorage.removeItem(LS_KEY_CATALOGO);
+        } catch (e) {
+            console.warn('⚠️ localStorage corrotto, ignoro');
+            localStorage.removeItem(LS_KEY_CATALOGO);
+        }
+    }
+
+    // 2) Carica da file e normalizza
+    try {
+        const res = await fetch('data/catalogo.json');
+        if (!res.ok) throw new Error('File non trovato');
+        const raw = await res.json();
+        CATALOGO = normalizzaCatalogo(raw);
+        localStorage.setItem(LS_KEY_CATALOGO, JSON.stringify(CATALOGO));
+        console.log('📦 Catalogo da file normalizzato:', CATALOGO.catalogo.interventi.length, 'interventi');
+        return true;
+    } catch (e) {
+        console.warn('⚠️ catalogo.json non caricato:', e.message);
+        CATALOGO = null;
+        return false;
+    }
+}
+
+function isCatalogoValido(c) {
+    if (!c || !c.catalogo) return false;
+    if (!Array.isArray(c.catalogo.interventi)) return false;
+    if (!c.catalogo.domandeMap || typeof c.catalogo.domandeMap !== 'object') return false;
+    if (!Array.isArray(c.catalogo.moduliList)) return false;
+    if (!c.catalogo.normeMap || typeof c.catalogo.normeMap !== 'object') return false;
+    if (!c.catalogo.verbiMap || typeof c.catalogo.verbiMap !== 'object') return false;
+    if (!c.catalogo.gruppiMap || typeof c.catalogo.gruppiMap !== 'object') return false;
+    return true;
+}
+
+function normalizzaCatalogo(raw) {
+    // Supporta sia formato vecchio (catalogo.interventi) che nuovo (root.interventi)
+    const src = raw?.catalogo || raw || {};
+    const interventi = Array.isArray(src.interventi) ? src.interventi : [];
+    const verbiArr = Array.isArray(src.verbi) ? src.verbi : Object.values(src.verbi || {});
+    const gruppiArr = Array.isArray(src.gruppi) ? src.gruppi : Object.values(src.gruppi || {});
+    const moduliRaw = src.moduli;
+    const moduliArr = Array.isArray(moduliRaw) ? moduliRaw : Object.values(moduliRaw || {});
+    const domandeArr = Array.isArray(src.domande) ? src.domande : Object.values(src.domande || {});
+    const normeArr = Array.isArray(src.norme) ? src.norme : Object.values(src.norme || {});
+
+    const moduliMap = {};
+    moduliArr.forEach(m => { if (m && m.id) moduliMap[m.id] = m; });
+
+    const normeMap = {};
+    normeArr.forEach(n => { if (n && n.id) normeMap[n.id] = n; });
+
+    const domandeMap = {};
+    domandeArr.forEach(d => { if (d && d.id) domandeMap[d.id] = d; });
+
+    const verbiMap = {};
+    verbiArr.forEach(v => { if (v && v.id) verbiMap[v.id] = v; });
+
+    const gruppiMap = {};
+    gruppiArr.forEach(g => { if (g && g.id) gruppiMap[g.id] = g; });
+
+    const interventiNorm = interventi.map(i => ({
+        id: i.id,
+        descrizione: (i.descrizione || '').trim(),
+        verbo: i.verbo || '',
+        gruppo: i.gruppo || '',
+        normativa: Array.isArray(i.normativa) ? i.normativa : [],
+        moduli_obbligatori: Array.isArray(i.moduli_obbligatori) ? i.moduli_obbligatori : [],
+        moduli_condizionali: Array.isArray(i.moduli_condizionali) ? i.moduli_condizionali : [],
+        materiali_richiesti: Array.isArray(i.materiali_richiesti) ? i.materiali_richiesti : [],
+        domande_richieste: Array.isArray(i.domande_richieste) ? i.domande_richieste : [],
+        consigli: Array.isArray(i.consigli) ? i.consigli : [],
+        _excel_id: i._excel_id || '',
+        _excel_row: i._excel_row || ''
+    }));
+
+    return {
+        catalogo: {
+            interventi: interventiNorm,
+            verbi: verbiArr,
+            gruppi: gruppiArr,
+            moduli: moduliMap,
+            moduliList: moduliArr,
+            domande: domandeArr,
+            domandeMap,
+            norme: normeArr,
+            normeMap,
+            verbiMap,
+            gruppiMap,
+            documenti_commessa: Array.isArray(src.documenti_commessa) ? src.documenti_commessa : [],
+            ruoli_firma: Array.isArray(src.ruoli_firma) ? src.ruoli_firma : [],
+            incompatibilita: Array.isArray(src.incompatibilita) ? src.incompatibilita : []
+        }
+    };
+}
+
+// ============================================================
+// MOTORI
+// ============================================================
+const Motori = {
+    getNomeVerbo(id) { return CATALOGO?.catalogo?.verbiMap?.[id]?.nome || id || ''; },
+    getNomeGruppo(id) { return CATALOGO?.catalogo?.gruppiMap?.[id]?.nome || id || ''; },
+    getModulo(id) { return CATALOGO?.catalogo?.moduli?.[id] || null; },
+    getNorma(id) { return CATALOGO?.catalogo?.normeMap?.[id] || null; },
+    getDomanda(id) { return CATALOGO?.catalogo?.domandeMap?.[id] || null; },
+
+    risolviNorme(ids) {
+        return (ids || []).map(id => {
+            const n = this.getNorma(id);
+            return n ? { id, codice: n.id, edizione: n.edizione, descrizione: n.descrizione, ambito: n.ambito } : { id, codice: id, descrizione: id };
+        });
+    },
+
+    risolviModuli(ids, condizionali) {
+        return (ids || []).map(id => {
+            const m = this.getModulo(id);
+            return m
+                ? { id, nome: m.nome, tipo: m.tipo, firme: m.firme_richieste || [], condizionale: !!condizionali }
+                : { id, nome: id, tipo: '', firme: [], condizionale: !!condizionali };
+        });
+    },
+
+    risolviDomandeIntervento(intervento, risposteIntervento) {
+        const out = [];
+        (intervento.domande_richieste || []).forEach(id => {
+            const d = this.getDomanda(id);
+            if (!d) return;
+            if (d.condizioni && !this.verificaCondizioniDomanda(d.condizioni, risposteIntervento)) return;
+            out.push({ ...d });
+        });
+        return out;
+    },
+
+    verificaCondizioniDomanda(condizioni, risposte) {
+        if (!condizioni) return true;
+        const op = condizioni.operatore || 'and';
+        const list = condizioni.condizioni || [];
+        if (list.length === 0) return true;
+        const results = list.map(c => {
+            const val = risposte?.[c.campo];
+            switch (c.operatore) {
+                case 'uguale': return val === c.valore;
+                case 'diverso': return val !== c.valore;
+                case 'in': return Array.isArray(c.valore) && c.valore.includes(val);
+                case 'non_in': return Array.isArray(c.valore) && !c.valore.includes(val);
+                case 'maggiore': return Number(val) > Number(c.valore);
+                case 'minore': return Number(val) < Number(c.valore);
+                default: return true;
+            }
+        });
+        return op === 'and' ? results.every(Boolean) : results.some(Boolean);
+    },
+
+    calcolaDocumenti(interventi) {
+        const docMap = new Map();
+        (interventi || []).forEach(i => {
+            (i.moduli_obbligatori || []).forEach(id => {
+                const m = this.getModulo(id);
+                const nome = m ? `${id} — ${m.nome}` : id;
+                docMap.set(id, { id, nome, obbligatorio: true, firme: m?.firme_richieste || [] });
+            });
+            (i.moduli_condizionali || []).forEach(id => {
+                const m = this.getModulo(id);
+                const nome = m ? `${id} — ${m.nome}` : id;
+                if (!docMap.has(id)) docMap.set(id, { id, nome, obbligatorio: false, firme: m?.firme_richieste || [] });
+            });
+        });
+        return Array.from(docMap.values());
+    },
+
+    statoIntervento(intervento, risposteIntervento, materialiIntervento) {
+        const domande = this.risolviDomandeIntervento(intervento, risposteIntervento);
+        const domandeObbl = domande.filter(d => d.obbligatoria);
+        const domandeMancanti = domandeObbl.filter(d => {
+            const v = risposteIntervento?.[d.id];
+            return v === undefined || v === null || v === '';
+        });
+        const materialiRichiesti = intervento.materiali_richiesti || [];
+        const materialiMancanti = materialiRichiesti.filter(mr => {
+            if (!mr.obbligatorio) return false;
+            return !materialiIntervento.some(mi => mi.tipologia_componente === mr.descrizione);
+        });
+        if (domandeMancanti.length === 0 && materialiMancanti.length === 0) {
+            return { ok: true, domandeMancanti: [], materialiMancanti: [] };
+        }
+        return { ok: false, domandeMancanti, materialiMancanti };
+    }
+};
+
+// ============================================================
+// CLASSE APP
+// ============================================================
+class App {
+    constructor() {
+        this.step = 1;
+        this.interventiSelezionati = [];
+        this.risposte = {};
+        this.materiali = [];
+        this.tipoLavorazione = '';
+        this.schedeAperte = new Set(); // supporto multi-scheda
+        this.dc = {};
+        this.dettagliAperti = new Set();
+    }
+
+    async init() {
+        this.nuovoDC();
+        await this.caricaDati();
+        this.aggiornaDashboard();
+        this.renderFormAnagrafica();
+        console.log('✅ DC Generator v6.3 avviato');
+        if (!CATALOGO) this.mostraNotifica('⚠️ Catalogo non caricato: verifica data/catalogo.json', 'error');
+        if (!ANAGRAFICA) this.mostraNotifica('⚠️ Anagrafica non caricata: verifica data/anagrafica.json', 'error');
+    }
+
+    nuovoDC() {
+        this.dc = {
+            id: '', data: new Date().toISOString().split('T')[0], stato: 'bozza',
+            anagrafica: { impianto: {}, date: {} },
+            tipo_lavorazione: '', interventi: [], risposte: {}, materiali: [],
+            documenti: { generati: [] }, normative: [], tracciabilita: []
+        };
+    }
+
+    async caricaDati() {
+        await caricaAnagrafica();
+        await caricaCatalogo();
+    }
+
+    mostraView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    mostraNotifica(msg, tipo = 'info') {
+        const el = document.getElementById('notification');
+        el.className = `notification ${tipo}`;
+        el.textContent = msg;
+        el.style.display = 'block';
+        clearTimeout(this._notifTimer);
+        this._notifTimer = setTimeout(() => el.style.display = 'none', 5000);
+    }
+
+    getValore(id) { return document.getElementById(id)?.value || ''; }
+    setValore(id, val) { if (document.getElementById(id)) document.getElementById(id).value = val || ''; }
+
+    tornaDashboard() { this.mostraView('dashboard'); this.aggiornaDashboard(); }
+
+    nuovaCommessa() {
+        if (!CATALOGO) { this.mostraNotifica('⚠️ Catalogo non caricato.', 'error'); return; }
+        this.nuovoDC();
+        this.interventiSelezionati = [];
+        this.risposte = {};
+        this.materiali = [];
+        this.tipoLavorazione = '';
+        this.schedeAperte.clear();
+        this.dettagliAperti.clear();
+        document.querySelectorAll('#form-anagrafica input, #form-anagrafica select').forEach(el => el.value = '');
+        this.setValore('tipo_lavorazione', '');
+        this.setValore('ricerca_intervento', '');
+        this.aggiornaSelezioniUI();
+        this.vaiStep(1);
+        this.mostraView('wizard');
+    }
+
+    vaiStep(step) {
+        this.step = step;
+        document.querySelectorAll('.step').forEach(el => {
+            const s = parseInt(el.dataset.step);
+            el.classList.remove('active', 'completed');
+            if (s === step) el.classList.add('active');
+            else if (s < step) el.classList.add('completed');
+        });
+        document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+        document.getElementById(`step-${step}`).classList.add('active');
+
+        if (step === 3) { this.popolaFiltri(); this.cercaInterventi(); }
+        if (step === 4) this.caricaSchedeLavoro();
+        if (step === 5) this.generaRiepilogo();
+    }
+
+    nextStep() {
+        if (this.step === 1 && !this.validaStep1()) return;
+        if (this.step === 2 && !this.validaStep2()) return;
+        if (this.step === 3 && this.interventiSelezionati.length === 0) {
+            this.mostraNotifica('⚠️ Seleziona almeno un intervento.', 'error'); return;
+        }
+        if (this.step === 3) {
+            this.interventiSelezionati.forEach(i => {
+                if (!this.risposte[i.id]) this.risposte[i.id] = {};
+            });
+        }
+        if (this.step === 4) {
+            const problemi = this.verificaCompletezzaSchede();
+            if (problemi.length > 0) {
+                const msg = '⚠️ Alcune schede sono incomplete:\n\n' + problemi.map(p => `• ${p}`).join('\n') + '\n\nProcedere comunque?';
+                if (!confirm(msg)) return;
+            }
+        }
+        if (this.step < 5) this.vaiStep(this.step + 1);
+    }
+
+    prevStep() { if (this.step > 1) this.vaiStep(this.step - 1); }
+
+    verificaCompletezzaSchede() {
+        const problemi = [];
+        this.interventiSelezionati.forEach(i => {
+            const st = Motori.statoIntervento(i, this.risposte[i.id] || {}, this.materiali.filter(m => m.intervento_id === i.id));
+            if (!st.ok) {
+                if (st.domandeMancanti.length > 0) {
+                    problemi.push(`"${i.descrizione}": ${st.domandeMancanti.length} domanda/e obbligatoria/e mancante/i (${st.domandeMancanti.map(d => d.testo).join(', ')})`);
+                }
+                if (st.materialiMancanti.length > 0) {
+                    problemi.push(`"${i.descrizione}": ${st.materialiMancanti.length} materiale/i CdS obbligatorio/i non inserito/i (${st.materialiMancanti.map(m => m.descrizione).join(', ')})`);
+                }
+            }
+        });
+        return problemi;
+    }
+
+    // ============================================================
+    // STEP 1
+    // ============================================================
+    renderFormAnagrafica() {
+        const container = document.getElementById('form-anagrafica');
+        if (!ANAGRAFICA || !ANAGRAFICA.campi) {
+            container.innerHTML = '<p class="empty">⚠️ Anagrafica non disponibile (data/anagrafica.json).</p>';
+            return;
+        }
+        let html = '';
+        for (const [key, campo] of Object.entries(ANAGRAFICA.campi)) {
+            const req = campo.obbligatorio ? '<span class="required">*</span>' : '';
+            const ph = campo.placeholder || '';
+            const hint = campo.hint ? `<span class="hint">${campo.hint}</span>` : '';
+            const fullW = campo.fullWidth ? 'full-width' : '';
+            html += `<div class="form-group ${fullW}">`;
+            html += `<label>${campo.label} ${req}</label>`;
+            if (campo.tipo === 'enum') {
+                html += `<select id="${key}"><option value="">-- Seleziona --</option>`;
+                (campo.opzioni || []).forEach(opt => html += `<option value="${opt}">${opt}</option>`);
+                html += `</select>`;
+            } else if (campo.tipo === 'date') {
+                html += `<input type="date" id="${key}">`;
+            } else if (campo.tipo === 'number') {
+                html += `<input type="number" id="${key}" placeholder="${ph}">`;
+            } else {
+                html += `<input type="text" id="${key}" placeholder="${ph}">`;
+            }
+            html += hint;
+            html += `</div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    validaStep1() {
+        if (!ANAGRAFICA?.campi) { this.mostraNotifica('⚠️ Anagrafica non disponibile.', 'error'); return false; }
+        let ok = true;
+        for (const [key, campo] of Object.entries(ANAGRAFICA.campi)) {
+            const el = document.getElementById(key);
+            if (campo.obbligatorio && el && !el.value.trim()) {
+                el.classList.add('error'); ok = false;
+            } else if (el) {
+                el.classList.remove('error');
+            }
+        }
+        if (!ok) { this.mostraNotifica('⚠️ Compila tutti i campi obbligatori.', 'error'); return false; }
+        this.dc.id = this.getValore('commessa') || 'NUOVA';
+        this.dc.anagrafica.impianto = {};
+        this.dc.anagrafica.date = {};
+        for (const [key, campo] of Object.entries(ANAGRAFICA.campi)) {
+            const val = this.getValore(key);
+            if (campo.tipo === 'date') this.dc.anagrafica.date[key] = val;
+            else if (campo.tipo === 'number') this.dc.anagrafica.impianto[key] = val ? parseFloat(val) : null;
+            else this.dc.anagrafica.impianto[key] = val;
+        }
+        return true;
+    }
+
+    // ============================================================
+    // STEP 2
+    // ============================================================
+    validaStep2() {
+        const tipo = this.getValore('tipo_lavorazione');
+        if (!tipo) { this.mostraNotifica('⚠️ Seleziona un tipo di lavorazione.', 'error'); return false; }
+        this.tipoLavorazione = tipo;
+        this.dc.tipo_lavorazione = tipo;
+        return true;
+    }
+
+    // ============================================================
+    // STEP 3 - RICERCA INTERVENTI
+    // ============================================================
+    getInterventiFiltrati() {
+        return CATALOGO?.catalogo?.interventi || [];
+    }
+
+    popolaFiltri() {
+        const verbi = CATALOGO?.catalogo?.verbi || [];
+        const gruppi = CATALOGO?.catalogo?.gruppi || [];
+        document.getElementById('filtro_verbo').innerHTML = '<option value="">Tutti i verbi</option>' + verbi.map(v => `<option value="${v.id}">${v.nome}</option>`).join('');
+        document.getElementById('filtro_gruppo').innerHTML = '<option value="">Tutti i gruppi</option>' + gruppi.map(g => `<option value="${g.id}">${g.nome}</option>`).join('');
+    }
+
+    cercaInterventi() {
+        const query = (this.getValore('ricerca_intervento') || '').toLowerCase().trim();
+        const verbo = this.getValore('filtro_verbo');
+        const gruppo = this.getValore('filtro_gruppo');
+
+        let interventi = this.getInterventiFiltrati();
+        if (verbo) interventi = interventi.filter(i => i.verbo === verbo);
+        if (gruppo) interventi = interventi.filter(i => i.gruppo === gruppo);
+        if (query) {
+            interventi = interventi.filter(i => {
+                const haystack = [
+                    i.descrizione,
+                    Motori.getNomeVerbo(i.verbo),
+                    Motori.getNomeGruppo(i.gruppo),
+                    ...(i.normativa || []).map(id => { const n = Motori.getNorma(id); return n ? `${n.id} ${n.descrizione}` : id; }),
+                    ...(i.moduli_obbligatori || []).map(id => { const m = Motori.getModulo(id); return m ? `${id} ${m.nome}` : id; }),
+                    ...(i.materiali_richiesti || []).map(m => m.descrizione),
+                    ...(i.consigli || [])
+                ].join(' ').toLowerCase();
+                return haystack.includes(query);
+            });
+        }
+
+        const container = document.getElementById('risultati_interventi');
+        if (interventi.length === 0) { container.innerHTML = '<p class="empty">Nessun intervento trovato.</p>'; return; }
+
+        container.innerHTML = interventi.map(i => {
+            const isSel = this.interventiSelezionati.some(s => s.id === i.id);
+            const isOpen = this.dettagliAperti.has(i.id);
+            const idSafe = encodeURIComponent(i.id);
+            const nMod = (i.moduli_obbligatori || []).length;
+            const nDom = (i.domande_richieste || []).length;
+            const hasCdS = (i.materiali_richiesti || []).length > 0;
+            const hasCons = (i.consigli || []).length > 0;
+            const nNorm = (i.normativa || []).length;
+
+            const badges = [
+                `<span class="badge badge-verbo">${Motori.getNomeVerbo(i.verbo)}</span>`,
+                `<span class="badge badge-gruppo">${Motori.getNomeGruppo(i.gruppo)}</span>`,
+                nNorm ? `<span class="badge badge-norma" title="${(i.normativa || []).join(', ')}">📜 ${nNorm} norma/e</span>` : '',
+                nMod ? `<span class="badge badge-modulo">📄 ${nMod} modulo/i</span>` : '',
+                hasCdS ? `<span class="badge badge-cds">🔒 CdS</span>` : '',
+                nDom ? `<span class="badge badge-domande">❓ ${nDom} domanda/e</span>` : '',
+                hasCons ? `<span class="badge badge-consiglio">💡</span>` : ''
+            ].filter(Boolean).join('');
+
+            let detailHtml = '';
+            if (isOpen) {
+                const norme = Motori.risolviNorme(i.normativa);
+                const moduli = Motori.risolviModuli(i.moduli_obbligatori, false);
+                const moduliCond = Motori.risolviModuli(i.moduli_condizionali, true);
+                const domande = Motori.risolviDomandeIntervento(i, {});
+                const materiali = i.materiali_richiesti || [];
+
+                detailHtml = `<div class="intervention-detail open">
+                    <div class="detail-section">
+                        <h6>📜 Normativa</h6>
+                        ${norme.length ? norme.map(n => `<div class="detail-norma"><strong>${n.codice}</strong> — ${n.descrizione || ''}</div>`).join('') : '<div class="detail-empty">Nessuna normativa associata.</div>'}
+                    </div>
+                    <div class="detail-section">
+                        <h6>📄 Documenti necessari</h6>
+                        ${moduli.length ? moduli.map(m => `<div class="detail-norma"><strong>${m.id}</strong> — ${m.nome}${m.firme.length ? `<br><span class="ref">Firme: ${m.firme.map(f => this.nomeRuolo(f)).join(', ')}</span>` : ''}</div>`).join('') : '<div class="detail-empty">Nessun modulo obbligatorio.</div>'}
+                        ${moduliCond.length ? `<div style="margin-top:6px;">${moduliCond.map(m => `<div class="detail-norma"><strong>${m.id}</strong> — ${m.nome} <span class="ref">(condizionale)</span></div>`).join('')}</div>` : ''}
+                    </div>
+                    <div class="detail-section">
+                        <h6>🔒 Materiali richiesti (CdS)</h6>
+                        ${materiali.length ? materiali.map(m => `<div class="detail-norma"><strong>${m.descrizione}</strong> — ${m.tipo || ''} ${m.obbligatorio ? '(obbligatorio)' : '(opzionale)'}${m.richiede_certificato ? ' <span class="badge badge-cds">cert.</span>' : ''}</div>`).join('') : '<div class="detail-empty">Nessun materiale richiesto.</div>'}
+                    </div>
+                    <div class="detail-section">
+                        <h6>❓ Domande richieste</h6>
+                        ${domande.length ? domande.map(d => `<div class="detail-norma"><strong>${d.id}</strong> — ${d.testo}${d.obbligatoria ? ' *' : ''}</div>`).join('') : '<div class="detail-empty">Nessuna domanda richiesta.</div>'}
+                    </div>
+                    ${(i.consigli || []).length ? `<div class="detail-section"><h6>💡 Consigli</h6>${i.consigli.map(c => `<div class="detail-consiglio">${c}</div>`).join('')}</div>` : ''}
+                    ${i._excel_row ? `<div class="detail-section"><h6>Riferimento Excel</h6><div class="ref">riga ${i._excel_row} (id: ${i._excel_id})</div></div>` : ''}
+                </div>`;
+            }
+
+            return `<div class="intervention-item ${isSel ? 'selected' : ''}">
+                <div class="item-row" onclick="app.toggleDettaglio('${idSafe}')">
+                    <div class="item-title">${i.descrizione}</div>
+                    <div class="item-actions">
+                        <button class="btn-info-icon" title="Dettaglio" onclick="event.stopPropagation(); app.toggleDettaglio('${idSafe}')">ℹ️</button>
+                        <button class="btn-select ${isSel ? 'is-selected' : ''}" onclick="event.stopPropagation(); app.toggleIntervento('${idSafe}')">${isSel ? '✓ Selezionato' : '+ Seleziona'}</button>
+                    </div>
+                </div>
+                <div class="item-meta">${badges}</div>
+                ${detailHtml}
+            </div>`;
+        }).join('');
+    }
+
+    nomeRuolo(id) {
+        const ruoli = CATALOGO?.catalogo?.ruoli_firma || [];
+        const r = ruoli.find(x => x.id === id);
+        return r ? r.ruolo : id;
+    }
+
+    toggleDettaglio(idEnc) {
+        const id = decodeURIComponent(idEnc);
+        if (this.dettagliAperti.has(id)) this.dettagliAperti.delete(id);
+        else this.dettagliAperti.add(id);
+        this.cercaInterventi();
+    }
+
+    toggleIntervento(idEnc) {
+        const id = decodeURIComponent(idEnc);
+        const intervento = CATALOGO?.catalogo?.interventi?.find(i => i.id === id);
+        if (!intervento) return;
+        const idx = this.interventiSelezionati.findIndex(s => s.id === id);
+        if (idx > -1) {
+            this.interventiSelezionati.splice(idx, 1);
+            delete this.risposte[id];
+            this.materiali = this.materiali.filter(m => m.intervento_id !== id);
+            this.schedeAperte.delete(id);
+        } else {
+            this.interventiSelezionati.push(intervento);
+            this.risposte[id] = {};
+        }
+        this.aggiornaSelezioniUI();
+        this.cercaInterventi();
+    }
+
+    svuotaSelezione() {
+        if (this.interventiSelezionati.length === 0) return;
+        if (!confirm('Rimuovere tutti gli interventi selezionati?')) return;
+        this.interventiSelezionati = [];
+        this.risposte = {};
+        this.materiali = [];
+        this.schedeAperte.clear();
+        this.aggiornaSelezioniUI();
+        this.cercaInterventi();
+    }
+
+    aggiornaSelezioniUI() {
+        document.getElementById('selected-count').textContent = this.interventiSelezionati.length;
+        const list = document.getElementById('selected-list');
+        if (this.interventiSelezionati.length === 0) {
+            list.innerHTML = '<p style="color:#999;font-size:14px;">Nessun intervento selezionato.</p>'; return;
+        }
+        list.innerHTML = this.interventiSelezionati.map(i => {
+            const idSafe = encodeURIComponent(i.id);
+            return `<span class="selected-tag"><span class="tag-text" title="${i.descrizione}">${i.descrizione}</span><span class="remove" onclick="app.toggleIntervento('${idSafe}')">✕</span></span>`;
+        }).join('');
+    }
+
+    // ============================================================
+    // STEP 4 - SCHEDE LAVORO
+    // ============================================================
+    caricaSchedeLavoro() {
+        const container = document.getElementById('schede-container');
+        if (this.interventiSelezionati.length === 0) {
+            container.innerHTML = '<p class="empty">Nessun intervento selezionato.</p>'; return;
+        }
+
+        let html = '';
+        this.interventiSelezionati.forEach(intDef => {
+            const isAperta = this.schedeAperte.has(intDef.id);
+            const risposteInt = this.risposte[intDef.id] || {};
+            const materialiInt = this.materiali.filter(m => m.intervento_id === intDef.id);
+
+            const st = Motori.statoIntervento(intDef, risposteInt, materialiInt);
+            const statoIcona = st.ok ? '🟢' : '🟡';
+            const statoText = st.ok ? 'Completa' : 'Incompleta';
+
+            const norme = Motori.risolviNorme(intDef.normativa);
+            const moduliObbl = Motori.risolviModuli(intDef.moduli_obbligatori, false);
+            const moduliCond = Motori.risolviModuli(intDef.moduli_condizionali, true);
+            const domande = Motori.risolviDomandeIntervento(intDef, risposteInt);
+            const materialiRichiesti = intDef.materiali_richiesti || [];
+            const consigli = intDef.consigli || [];
+
+            const normeHtml = norme.length
+                ? norme.map(n => `<div class="norma-line"><strong>${n.codice}</strong> — ${n.descrizione || ''}</div>`).join('')
+                : '<div class="detail-empty">Nessuna normativa associata.</div>';
+
+            const moduliHtml = (moduliObbl.length || moduliCond.length)
+                ? moduliObbl.map(m => `<div class="modulo-line"><strong>${m.id}</strong> — ${m.nome}${m.firme.length ? `<span class="firme">Firme richieste: ${m.firme.map(f => this.nomeRuolo(f)).join(', ')}</span>` : ''}</div>`).join('')
+                  + moduliCond.map(m => `<div class="modulo-line condizionale"><strong>${m.id}</strong> — ${m.nome} <span class="firme">(condizionale)</span></div>`).join('')
+                : '<div class="detail-empty">Nessun documento richiesto.</div>';
+
+            let domandeHtml = '';
+            if (domande.length === 0) {
+                domandeHtml = '<div class="detail-empty">Nessuna domanda tecnica richiesta per questo intervento.</div>';
+            } else {
+                domandeHtml = domande.map(d => {
+                    const val = risposteInt[d.id] !== undefined ? risposteInt[d.id] : '';
+                    const req = d.obbligatoria ? '<span style="color:red">*</span>' : '';
+                    let inputHtml = '';
+                    if (d.tipo === 'boolean') {
+                        inputHtml = `<div class="radio-row">
+                            <label><input type="radio" name="d_${intDef.id}_${d.id}" value="si" ${val === 'si' ? 'checked' : ''} onchange="app.setRisposta('${intDef.id}','${d.id}','si')"> Sì</label>
+                            <label><input type="radio" name="d_${intDef.id}_${d.id}" value="no" ${val === 'no' ? 'checked' : ''} onchange="app.setRisposta('${intDef.id}','${d.id}','no')"> No</label>
+                        </div>`;
+                    } else if (d.tipo === 'enum') {
+                        inputHtml = `<select onchange="app.setRisposta('${intDef.id}','${d.id}',this.value)">
+                            <option value="">Seleziona...</option>
+                            ${(d.opzioni || []).map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('')}
+                        </select>`;
+                    } else if (d.tipo === 'number') {
+                        inputHtml = `<input type="number" value="${val}" onchange="app.setRisposta('${intDef.id}','${d.id}',this.value)">`;
+                    } else {
+                        inputHtml = `<input type="text" value="${val}" onchange="app.setRisposta('${intDef.id}','${d.id}',this.value)">`;
+                    }
+                    return `<div class="domanda-box">
+                        <label>${d.testo} ${req}</label>
+                        ${inputHtml}
+                        ${d.condizioni ? `<span class="domanda-help">Domanda condizionale</span>` : ''}
+                    </div>`;
+                }).join('');
+            }
+
+            let materialiHtml = '';
+            if (materialiRichiesti.length > 0) {
+                materialiHtml += `<div class="materiali-richiesti">` + materialiRichiesti.map(m => `
+                    <span class="materiale-richiesto ${m.obbligatorio ? 'obbligatorio' : ''}">
+                        ${m.descrizione} ${m.obbligatorio ? '(obbl.)' : '(opz.)'}${m.richiede_certificato ? ' <span class="cert">cert.</span>' : ''}
+                    </span>`).join('') + `</div>`;
+
+                if (materialiInt.length > 0) {
+                    materialiHtml += `<table class="cds-table">
+                        <tr><th>Tipologia</th><th>Seriale</th><th>P/N</th><th>Fornitore</th><th>Produttore</th><th>Pezzi</th><th>Cert.</th><th></th></tr>`;
+                    materialiInt.forEach(m => {
+                        const realIdx = this.materiali.indexOf(m);
+                        materialiHtml += `<tr>
+                            <td>${m.tipologia_componente}</td>
+                            <td>${m.serial_number}</td>
+                            <td>${m.part_number || '-'}</td>
+                            <td>${m.fornitore || '-'}</td>
+                            <td>${m.produttore || '-'}</td>
+                            <td>${m.n_pezzi}</td>
+                            <td>${m.certificato || '-'}</td>
+                            <td><button class="btn btn-sm btn-danger" onclick="app.rimuoviMateriale(${realIdx})">✕</button></td>
+                        </tr>`;
+                    });
+                    materialiHtml += `</table>`;
+                }
+
+                const optsTipologia = materialiRichiesti.map(m => `<option value="${m.descrizione}">${m.descrizione}${m.richiede_certificato ? ' (cert.)' : ''}</option>`).join('');
+                materialiHtml += `<div class="cds-form">
+                    <select id="mat_tipologia_${intDef.id}"><option value="">-- Tipologia --</option>${optsTipologia}</select>
+                    <input type="text" id="mat_seriale_${intDef.id}" placeholder="Serial Number *">
+                    <input type="text" id="mat_pn_${intDef.id}" placeholder="Part Number">
+                    <input type="text" id="mat_fornitore_${intDef.id}" placeholder="Fornitore">
+                    <input type="text" id="mat_produttore_${intDef.id}" placeholder="Produttore">
+                    <input type="number" id="mat_pezzi_${intDef.id}" placeholder="N. Pezzi" value="1">
+                    <input type="text" id="mat_certificato_${intDef.id}" placeholder="N. Certificato (se richiesto)">
+                    <div class="full"><button class="btn btn-sm btn-primary" onclick="app.aggiungiMaterialeScheda('${intDef.id}')">➕ Aggiungi CdS</button></div>
+                </div>`;
+            } else {
+                materialiHtml = '<div class="detail-empty">Nessun materiale CdS richiesto.</div>';
+            }
+
+            const consigliHtml = consigli.length
+                ? consigli.map((c, idx) => `<div class="consiglio-box"><span>💡 ${c}</span><button class="btn-info-icon" title="Apri consiglio" onclick="app.apriModaleConsiglio('${intDef.id}', ${idx})">ℹ️</button></div>`).join('')
+                : '<div class="detail-empty">Nessun consiglio.</div>';
+
+            html += `<div class="scheda-intervento">
+                <div class="scheda-header" onclick="app.toggleScheda('${intDef.id}')">
+                    <div>
+                        <h4>${statoIcona} ${intDef.descrizione}</h4>
+                        <div class="scheda-meta">
+                            <span>${Motori.getNomeVerbo(intDef.verbo)}</span>
+                            <span>${Motori.getNomeGruppo(intDef.gruppo)}</span>
+                            <span class="status-pill ${st.ok ? 'ok' : 'warn'}">${statoText}</span>
+                            ${!st.ok && st.domandeMancanti.length ? `<span class="status-pill miss">${st.domandeMancanti.length} domande mancanti</span>` : ''}
+                            ${!st.ok && st.materialiMancanti.length ? `<span class="status-pill miss">${st.materialiMancanti.length} CdS mancanti</span>` : ''}
+                        </div>
+                    </div>
+                    <span>${isAperta ? '▲' : '▼'}</span>
+                </div>
+                <div class="scheda-body ${isAperta ? 'active' : ''}">
+                    <div class="scheda-section"><h5>📜 Normativa</h5>${normeHtml}</div>
+                    <div class="scheda-section"><h5>📄 Documenti necessari</h5>${moduliHtml}</div>
+                    <div class="scheda-section"><h5>❓ Domande tecniche</h5>${domandeHtml}</div>
+                    <div class="scheda-section"><h5>🔒 Componenti di Sicurezza (CdS)</h5>${materialiHtml}</div>
+                    <div class="scheda-section"><h5>💡 Consigli</h5>${consigliHtml}</div>
+                    ${intDef._excel_row ? `<div class="scheda-section"><h5>Riferimento Excel</h5><div class="ref">riga ${intDef._excel_row} (id: ${intDef._excel_id})</div></div>` : ''}
+                </div>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    toggleScheda(id) {
+        if (this.schedeAperte.has(id)) this.schedeAperte.delete(id);
+        else this.schedeAperte.add(id);
+        this.caricaSchedeLavoro();
+    }
+
+    setRisposta(interventoId, domandaId, val) {
+        if (!this.risposte[interventoId]) this.risposte[interventoId] = {};
+        this.risposte[interventoId][domandaId] = val;
+        // Aggiorna solo la scheda interessata (mantiene focus e stato delle altre)
+        this.aggiornaSchedaSingola(interventoId);
+    }
+
+    aggiornaSchedaSingola(interventoId) {
+        // Re-render completo ma mantiene schedeAperte (Set)
+        this.caricaSchedeLavoro();
+    }
+
+    aggiungiMaterialeScheda(interventoId) {
+        const intervento = this.interventiSelezionati.find(i => i.id === interventoId);
+        if (!intervento) return;
+        const elTip = document.getElementById(`mat_tipologia_${interventoId}`);
+        const elSer = document.getElementById(`mat_seriale_${interventoId}`);
+        if (!elTip || !elSer) return;
+
+        const m = {
+            intervento_id: interventoId,
+            tipologia_componente: elTip.value,
+            serial_number: elSer.value.trim(),
+            part_number: document.getElementById(`mat_pn_${interventoId}`)?.value.trim() || '',
+            fornitore: document.getElementById(`mat_fornitore_${interventoId}`)?.value.trim() || '',
+            produttore: document.getElementById(`mat_produttore_${interventoId}`)?.value.trim() || '',
+            n_pezzi: parseInt(document.getElementById(`mat_pezzi_${interventoId}`)?.value) || 1,
+            certificato: document.getElementById(`mat_certificato_${interventoId}`)?.value.trim() || ''
+        };
+
+        if (!m.tipologia_componente) { this.mostraNotifica('Seleziona la tipologia del componente.', 'error'); return; }
+        if (!m.serial_number) { this.mostraNotifica('Il Serial Number è obbligatorio.', 'error'); return; }
+
+        const richiesti = intervento.materiali_richiesti || [];
+        const richiesto = richiesti.find(r => r.descrizione === m.tipologia_componente);
+        if (!richiesto) { this.mostraNotifica('Tipologia non prevista per questo intervento.', 'error'); return; }
+        if (richiesto.richiede_certificato && !m.certificato) {
+            this.mostraNotifica('Questo componente richiede un certificato: inserisci il numero.', 'error'); return;
+        }
+
+        if (this.materiali.some(x => x.serial_number === m.serial_number)) {
+            this.mostraNotifica('Serial Number già inserito in un altro materiale.', 'error'); return;
+        }
+
+        this.materiali.push(m);
+        this.caricaSchedeLavoro();
+        this.mostraNotifica('✅ Materiale CdS aggiunto.', 'success');
+    }
+
+    rimuoviMateriale(idx) {
+        this.materiali.splice(idx, 1);
+        this.caricaSchedeLavoro();
+    }
+
+    apriModaleConsiglio(interventoId, idx) {
+        const int = this.interventiSelezionati.find(i => i.id === interventoId);
+        const testo = int?.consigli?.[idx] || '';
+        document.getElementById('modal-consiglio-body').textContent = testo;
+        document.getElementById('modal-consiglio').classList.add('open');
+    }
+
+    chiudiModaleConsiglio() {
+        document.getElementById('modal-consiglio').classList.remove('open');
+    }
+
+    // ============================================================
+    // STEP 5 - RIEPILOGO
+    // ============================================================
+    generaRiepilogo() {
+        const container = document.getElementById('riepilogo-container');
+        let html = '';
+
+        const problemi = this.verificaCompletezzaSchede();
+        if (problemi.length > 0) {
+            html += `<div class="block-banner">
+                <h5>⚠️ Attenzione: alcune schede sono incomplete</h5>
+                <ul>${problemi.map(p => `<li>${p}</li>`).join('')}</ul>
+            </div>`;
+        }
+
+        html += `<div class="riepilogo-section"><h4>🏢 Impianto</h4>`;
+        html += `<p><strong>Commessa:</strong> ${this.dc.id || '-'}</p>`;
+        html += `<p><strong>Cliente:</strong> ${this.dc.anagrafica.impianto.cliente || '-'}</p>`;
+        html += `<p><strong>Lavorazione:</strong> ${this.tipoLavorazione || '-'}</p></div>`;
+
+        html += `<div class="riepilogo-section"><h4>🛠️ Interventi (${this.interventiSelezionati.length})</h4><ul class="riepilogo-list">`;
+        this.interventiSelezionati.forEach(i => {
+            html += `<li><strong>${i.descrizione}</strong><br>
+                <span class="ref">${Motori.getNomeVerbo(i.verbo)} · ${Motori.getNomeGruppo(i.gruppo)}</span>`;
+            if ((i.moduli_obbligatori || []).length) html += ` <span class="ref">(MOD: ${i.moduli_obbligatori.join(', ')})</span>`;
+            html += `</li>`;
+        });
+        html += `</ul></div>`;
+
+        const docs = Motori.calcolaDocumenti(this.interventiSelezionati);
+        html += `<div class="riepilogo-section"><h4>📄 Documenti da Generare (${docs.length})</h4><div class="riepilogo-doc">`;
+        docs.forEach(doc => {
+            html += `<span class="doc-tag ${doc.obbligatorio ? 'obbligatorio' : 'condizionale'}" title="${(doc.firme || []).map(f => this.nomeRuolo(f)).join(', ')}">${doc.nome}</span>`;
+        });
+        html += `</div></div>`;
+
+        const normeSet = new Map();
+        this.interventiSelezionati.forEach(i => {
+            Motori.risolviNorme(i.normativa).forEach(n => normeSet.set(n.id, n));
+        });
+        if (normeSet.size > 0) {
+            html += `<div class="riepilogo-section"><h4>📜 Normativa aggregata (${normeSet.size})</h4><ul class="riepilogo-list">`;
+            Array.from(normeSet.values()).forEach(n => {
+                html += `<li><strong>${n.codice}</strong> — ${n.descrizione || ''}</li>`;
+            });
+            html += `</ul></div>`;
+        }
+
+        if (this.materiali.length > 0) {
+            html += `<div class="riepilogo-section"><h4>🔒 Materiali / CdS Inseriti (${this.materiali.length})</h4><ul class="riepilogo-list">`;
+            this.materiali.forEach(m => {
+                html += `<li><strong>${m.tipologia_componente}</strong> — SN: ${m.serial_number} (${m.n_pezzi} pz)${m.certificato ? ` · cert. ${m.certificato}` : ''}</li>`;
+            });
+            html += `</ul></div>`;
+        }
+
+        container.innerHTML = html;
+    }
+
+    // ============================================================
+    // AZIONI FINALI
+    // ============================================================
+    generaDocumenti() {
+        this.dc.interventi = this.interventiSelezionati;
+        this.dc.risposte = this.risposte;
+        this.dc.materiali = this.materiali;
+        this.dc.stato = 'emessa';
+
+        const docs = Motori.calcolaDocumenti(this.interventiSelezionati);
+        this.dc.documenti.generati = docs.map(d => d.nome);
+
+        this.mostraView('generation');
+        document.getElementById('download-message').textContent =
+            `Commessa ${this.dc.id} elaborata con successo. ${this.dc.documenti.generati.length} documenti previsti.`;
+        this.salvaRecente(this.dc);
+    }
+
+    salvaCommessa() {
+        this.dc.interventi = this.interventiSelezionati;
+        this.dc.risposte = this.risposte;
+        this.dc.materiali = this.materiali;
+        this.salvaRecente(this.dc);
+        this.mostraNotifica('💾 Bozza salvata.', 'success');
+    }
+
+    downloadJSON() {
+        const json = JSON.stringify(this.dc, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${this.dc.id || 'commessa'}_${this.dc.data}.json`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+
+    salvaRecente(dc) {
+        const rec = JSON.parse(localStorage.getItem('dc_recenti') || '[]');
+        const filtered = rec.filter(r => r.id !== dc.id);
+        filtered.unshift({ id: dc.id, data: dc.data, anagrafica: dc.anagrafica, documenti: dc.documenti });
+        if (filtered.length > 5) filtered.length = 5;
+        localStorage.setItem('dc_recenti', JSON.stringify(filtered));
+        this.aggiornaDashboard();
+    }
+
+    aggiornaDashboard() {
+        const ints = CATALOGO?.catalogo?.interventi?.length || 0;
+        const grps = CATALOGO?.catalogo?.gruppi?.length || 0;
+        const mods = CATALOGO?.catalogo?.moduliList?.length || 0;
+        const recs = JSON.parse(localStorage.getItem('dc_recenti') || '[]');
+
+        document.getElementById('dash-interventi').textContent = ints;
+        document.getElementById('dash-gruppi').textContent = grps;
+        document.getElementById('dash-moduli').textContent = mods;
+        document.getElementById('dash-commesse').textContent = recs.length;
+
+        const list = document.getElementById('recenti');
+        if (recs.length === 0) list.innerHTML = '<p class="empty">Nessuna commessa recente.</p>';
+        else {
+            list.innerHTML = recs.map(r => `
+                <div class="recent-item" onclick="app.caricaRecente('${r.id}')">
+                    <div class="recent-title">📄 ${r.id}</div>
+                    <div class="recent-date">${r.anagrafica?.impianto?.cliente || 'N/D'} - ${r.data}</div>
+                </div>
+            `).join('');
+        }
+    }
+
+    caricaRecente(id) {
+        const recs = JSON.parse(localStorage.getItem('dc_recenti') || '[]');
+        const target = recs.find(r => r.id === id);
+        if (target) {
+            this.nuovaCommessa();
+            this.setValore('commessa', target.id);
+            if (target.anagrafica?.impianto) {
+                for (const [k, v] of Object.entries(target.anagrafica.impianto)) this.setValore(k, v);
+            }
+            this.mostraNotifica('Commessa recente caricata in bozza.', 'success');
+        }
+    }
+
+    caricaCommessa() {
+        if (!CATALOGO) { this.mostraNotifica('⚠️ Catalogo non caricato.', 'error'); return; }
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    this.nuovaCommessa();
+                    for (const [k, v] of Object.entries(data.anagrafica?.impianto || {})) this.setValore(k, v);
+                    for (const [k, v] of Object.entries(data.anagrafica?.date || {})) this.setValore(k, v);
+
+                    this.interventiSelezionati = (data.interventi || []).map(i => {
+                        const found = CATALOGO.catalogo.interventi.find(x => x.id === i.id);
+                        return found || i;
+                    });
+                    this.risposte = data.risposte || {};
+                    this.materiali = data.materiali || [];
+                    this.tipoLavorazione = data.tipo_lavorazione || '';
+                    this.setValore('tipo_lavorazione', this.tipoLavorazione);
+
+                    this.aggiornaSelezioniUI();
+                    this.mostraNotifica('✅ Commessa caricata con successo!', 'success');
+                    this.vaiStep(3);
+                } catch (err) {
+                    this.mostraNotifica('❌ Errore: ' + err.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    caricaEsempio() {
+        if (!CATALOGO) { this.mostraNotifica('⚠️ Catalogo non caricato.', 'error'); return; }
+        this.nuovaCommessa();
+        this.setValore('codice_esa', 'GUN20347');
+        this.setValore('commessa', 'TEST-001');
+        this.setValore('cliente', 'COND. S. LUIGI');
+        this.setValore('indirizzo', 'VIA S. LUIGI, 48, ARADEO (LE)');
+        this.setValore('tipo_impianto', 'Ascensore oleodinamico');
+        this.setValore('tipo_lavori', 'manut. straordinaria');
+        this.setValore('tipo_prodotto', 'nessuno');
+        this.setValore('direttiva_applicabile', 'Direttiva Ascensori 2014/33/UE - DPR 23/2017');
+        this.setValore('destinazione_locali', 'Civile');
+        this.mostraNotifica('Dati esempio caricati. Clicca Continua.', 'success');
+    }
+}
+
+// ============================================================
+// AVVIO
+// ============================================================
+const app = new App();
+window.app = app;
+document.addEventListener('DOMContentLoaded', () => app.init());
+</script>
+</body>
+</html>

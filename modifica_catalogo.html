@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogo DC - Modifica</title>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --border: #dee2e6;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #212529;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        header h1 { margin: 0; font-size: 1.8em; }
+        header .meta { opacity: 0.9; font-size: 0.9em; }
+        header .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        header a, header button {
+            color: white;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9em;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        header a:hover, header button:hover { background: rgba(255,255,255,0.35); }
+        header button.primary { background: var(--success); }
+        header button.primary:hover { background: #218838; }
+        header button.danger { background: var(--danger); }
+        header button.danger:hover { background: #c82333; }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .tab {
+            padding: 10px 18px;
+            background: transparent;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            color: var(--secondary);
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .tab:hover { background: var(--light); color: var(--primary); }
+        .tab.active { background: var(--primary); color: white; }
+        .tab .count {
+            background: rgba(0,0,0,0.15);
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        .tab.active .count { background: rgba(255,255,255,0.3); }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 15px 20px;
+            background: var(--light);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .card-body { padding: 15px 20px; }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .search-bar input, .search-bar select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .search-bar input { flex: 1; min-width: 200px; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+        th, td { padding: 10px 12px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+        th { background: var(--light); font-weight: 600; color: #495057; }
+        tr:hover { background: #f9fbfd; }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, monospace;
+            background: #f1f1f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            color: #d63384;
+        }
+        pre {
+            background: #2b2b2b;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.85em;
+            margin: 0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: white;
+        }
+        .badge-success { background: var(--success); }
+        .badge-warning { background: var(--warning); color: #333; }
+        .badge-danger { background: var(--danger); }
+        .badge-info { background: var(--info); }
+        .badge-secondary { background: var(--secondary); }
+
+        .empty { text-align: center; padding: 40px; color: var(--secondary); font-style: italic; }
+        .loading { text-align: center; padding: 60px; font-size: 1.1em; color: var(--secondary); }
+
+        .error-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .error-box code { background: #f5c6cb; color: #721c24; }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #004494; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #218838; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-sm { padding: 4px 8px; font-size: 0.8em; }
+        .btn-row { display: flex; gap: 5px; flex-wrap: wrap; }
+
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 1000;
+            padding: 30px 15px;
+            overflow-y: auto;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            padding: 15px 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 { margin: 0; font-size: 1.2em; }
+        .modal-header button {
+            background: transparent; border: none; color: white;
+            font-size: 1.5em; cursor: pointer; line-height: 1;
+        }
+        .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
+        .modal-footer {
+            padding: 15px 20px;
+            background: var(--light);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .form-row { margin-bottom: 15px; }
+        .form-row label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #495057;
+        }
+        .form-row label .required { color: var(--danger); }
+        .form-row input[type="text"],
+        .form-row input[type="number"],
+        .form-row select,
+        .form-row textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-family: inherit;
+        }
+        .form-row textarea { min-height: 100px; resize: vertical; font-family: monospace; font-size: 0.85em; }
+        .form-row .hint { font-size: 0.8em; color: var(--secondary); margin-top: 3px; }
+        .form-row.invalid input,
+        .form-row.invalid select,
+        .form-row.invalid textarea { border-color: var(--danger); background: #fff5f5; }
+        .form-row .error-msg { color: var(--danger); font-size: 0.8em; margin-top: 3px; }
+
+        .validation-panel {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .validation-panel.ok { background: #d4edda; border-color: #c3e6cb; }
+        .validation-panel h4 { margin: 0 0 8px; }
+        .validation-panel ul { margin: 0; padding-left: 20px; }
+        .validation-panel li { font-size: 0.9em; margin-bottom: 4px; }
+
+        .toast {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            background: var(--success); color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 2000;
+            display: none;
+        }
+        .toast.show { display: block; animation: slideIn 0.3s ease; }
+        .toast.error { background: var(--danger); }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .dirty-indicator {
+            display: inline-block;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--warning);
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div>
+            <h1>✏️ Modifica Catalogo DC</h1>
+            <div class="meta">Versione <strong id="versione">—</strong><span id="dirty-indicator" class="dirty-indicator" style="display:none;" title="Modifiche non esportate"></span></div>
+        </div>
+        <div class="actions">
+            <a href="catalogo.html">📖 Consultazione</a>
+            <button onclick="importaJSON()">📥 Importa JSON</button>
+            <button class="primary" onclick="esportaJSON()">💾 Esporta JSON</button>
+            <button class="danger" onclick="validaCatalogo()">✓ Valida</button>
+        </div>
+    </header>
+
+    <div id="loading" class="loading">Caricamento del catalogo...</div>
+    <div id="error-container" style="display:none;"></div>
+
+    <div id="content" style="display:none;">
+        <div id="validation-result"></div>
+
+        <div class="tabs" id="tabs">
+            <button class="tab active" data-panel="interventi">Interventi <span class="count" id="count-interventi">0</span></button>
+            <button class="tab" data-panel="documenti_commessa">Documenti Commessa <span class="count" id="count-documenti_commessa">0</span></button>
+            <button class="tab" data-panel="moduli">Moduli <span class="count" id="count-moduli">0</span></button>
+            <button class="tab" data-panel="domande">Domande <span class="count" id="count-domande">0</span></button>
+            <button class="tab" data-panel="norme">Norme <span class="count" id="count-norme">0</span></button>
+            <button class="tab" data-panel="verbi">Verbi <span class="count" id="count-verbi">0</span></button>
+            <button class="tab" data-panel="gruppi">Gruppi <span class="count" id="count-gruppi">0</span></button>
+            <button class="tab" data-panel="ruoli_firma">Ruoli Firma <span class="count" id="count-ruoli_firma">0</span></button>
+            <button class="tab" data-panel="incompatibilita">Incompatibilità <span class="count" id="count-incompatibilita">0</span></button>
+            <button class="tab" data-panel="campi_commessa">Campi Commessa <span class="count" id="count-campi_commessa">0</span></button>
+            <button class="tab" data-panel="meta">Meta</button>
+        </div>
+
+        <!-- PANEL INTERVENTI -->
+        <div class="panel active" id="panel-interventi">
+            <div class="card">
+                <div class="card-header">
+                    <span>Interventi</span>
+                    <button class="btn btn-success" onclick="apriEditor('interventi', null)">+ Nuovo intervento</button>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar">
+                        <input type="text" id="search-interventi" placeholder="Cerca per ID, descrizione, verbo...">
+                        <select id="filter-gruppo"><option value="">Tutti i gruppi</option></select>
+                        <select id="filter-verbo"><option value="">Tutti i verbi</option></select>
+                    </div>
+                    <div id="table-interventi"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DOCUMENTI COMMESSA -->
+        <div class="panel" id="panel-documenti_commessa">
+            <div class="card">
+                <div class="card-header">
+                    <span>Documenti di Commessa</span>
+                    <button class="btn btn-success" onclick="apriEditor('documenti_commessa', null)">+ Nuovo documento</button>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar">
+                        <input type="text" id="search-documenti_commessa" placeholder="Cerca per ID, nome, tipo...">
+                    </div>
+                    <div id="table-documenti_commessa"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL MODULI -->
+        <div class="panel" id="panel-moduli">
+            <div class="card">
+                <div class="card-header">
+                    <span>Moduli</span>
+                    <button class="btn btn-success" onclick="apriEditor('moduli', null)">+ Nuovo modulo</button>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar"><input type="text" id="search-moduli" placeholder="Cerca per ID, nome, tipo..."></div>
+                    <div id="table-moduli"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DOMANDE -->
+        <div class="panel" id="panel-domande">
+            <div class="card">
+                <div class="card-header">
+                    <span>Domande</span>
+                    <button class="btn btn-success" onclick="apriEditor('domande', null)">+ Nuova domanda</button>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar">
+                        <input type="text" id="search-domande" placeholder="Cerca per ID, testo, gruppo...">
+                        <select id="filter-domande-gruppo"><option value="">Tutti i gruppi</option></select>
+                    </div>
+                    <div id="table-domande"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL NORME -->
+        <div class="panel" id="panel-norme">
+            <div class="card">
+                <div class="card-header">
+                    <span>Norme</span>
+                    <button class="btn btn-success" onclick="apriEditor('norme', null)">+ Nuova norma</button>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar"><input type="text" id="search-norme" placeholder="Cerca per ID, edizione, descrizione..."></div>
+                    <div id="table-norme"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL VERBI -->
+        <div class="panel" id="panel-verbi">
+            <div class="card">
+                <div class="card-header">
+                    <span>Verbi</span>
+                    <button class="btn btn-success" onclick="apriEditor('verbi', null)">+ Nuovo verbo</button>
+                </div>
+                <div class="card-body"><div id="table-verbi"></div></div>
+            </div>
+        </div>
+
+        <!-- PANEL GRUPPI -->
+        <div class="panel" id="panel-gruppi">
+            <div class="card">
+                <div class="card-header">
+                    <span>Gruppi</span>
+                    <button class="btn btn-success" onclick="apriEditor('gruppi', null)">+ Nuovo gruppo</button>
+                </div>
+                <div class="card-body"><div id="table-gruppi"></div></div>
+            </div>
+        </div>
+
+        <!-- PANEL RUOLI FIRMA -->
+        <div class="panel" id="panel-ruoli_firma">
+            <div class="card">
+                <div class="card-header">
+                    <span>Ruoli Firma</span>
+                    <button class="btn btn-success" onclick="apriEditor('ruoli_firma', null)">+ Nuovo ruolo</button>
+                </div>
+                <div class="card-body"><div id="table-ruoli_firma"></div></div>
+            </div>
+        </div>
+
+        <!-- PANEL INCOMPATIBILITA -->
+        <div class="panel" id="panel-incompatibilita">
+            <div class="card">
+                <div class="card-header">
+                    <span>Incompatibilità tra Interventi</span>
+                    <button class="btn btn-success" onclick="apriEditor('incompatibilita', null)">+ Nuova incompatibilità</button>
+                </div>
+                <div class="card-body"><div id="table-incompatibilita"></div></div>
+            </div>
+        </div>
+
+        <!-- PANEL CAMPI COMMESSA -->
+        <div class="panel" id="panel-campi_commessa">
+            <div class="card">
+                <div class="card-header">
+                    <span>Campi di Commessa</span>
+                    <button class="btn btn-success" onclick="apriEditor('campi_commessa', null)">+ Nuovo campo</button>
+                </div>
+                <div class="card-body"><div id="table-campi_commessa"></div></div>
+            </div>
+        </div>
+
+        <!-- PANEL META -->
+        <div class="panel" id="panel-meta">
+            <div class="card">
+                <div class="card-header"><span>Metadati del catalogo</span></div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <label>Versione (semver) <span class="required">*</span></label>
+                        <input type="text" id="meta-versione" placeholder="es. 1.0.1">
+                    </div>
+                    <div class="form-row">
+                        <label>Data di rilascio</label>
+                        <input type="text" id="meta-data" placeholder="es. 2026-10-22">
+                    </div>
+                    <div class="form-row">
+                        <label>Fonte (file Excel + hash)</label>
+                        <input type="text" id="meta-fonte" placeholder="es. Moduli Cantiere-DC al 2025-12-18.xlsx (sha256:...)">
+                    </div>
+                    <div class="form-row">
+                        <label>Note</label>
+                        <textarea id="meta-note" rows="3"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="salvaMeta()">Salva metadati</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE EDITOR -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modal-title">Modifica</h3>
+            <button onclick="chiudiEditor()">×</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="chiudiEditor()">Annulla</button>
+            <button class="btn btn-primary" onclick="salvaEditor()">Salva</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE CONFERMA -->
+<div class="modal-overlay" id="confirm-overlay">
+    <div class="modal" style="max-width:500px;">
+        <div class="modal-header">
+            <h3 id="confirm-title">Conferma</h3>
+            <button onclick="chiudiConferma()">×</button>
+        </div>
+        <div class="modal-body" id="confirm-body"></div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="chiudiConferma()">Annulla</button>
+            <button class="btn btn-danger" id="confirm-ok-btn">Conferma</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   STATO GLOBALE
+   ============================================================ */
+let CATALOGO = null;
+let LOOKUP = { norme: {}, verbi: {}, gruppi: {}, moduli: {}, interventi: {}, ruoli_firma: {}, documenti_commessa: {} };
+let DIRTY = false;
+let EDITOR_STATE = { sezione: null, index: null }; // index=null → nuovo
+let CONFIRM_CALLBACK = null;
+
+/* ============================================================
+   BOOTSTRAP
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('data/catalogo.json')
+        .then(r => {
+            if (!r.ok) throw new Error('HTTP ' + r.status + ' - ' + r.statusText);
+            return r.json();
+        })
+        .then(data => {
+            CATALOGO = data;
+            costruisciLookup();
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            inizializzaUI();
+        })
+        .catch(err => {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error-container').style.display = 'block';
+            document.getElementById('error-container').innerHTML = `
+                <div class="error-box">
+                    <h3>Errore nel caricamento del catalogo</h3>
+                    <p><strong>${esc(err.message)}</strong></p>
+                    <p>Assicurati che il file <code>catalogo.json</code> esista nella stessa directory e che tu stia aprendo la pagina tramite un server locale (non <code>file://</code>).</p>
+                </div>`;
+        });
+});
+
+window.addEventListener('beforeunload', (e) => {
+    if (DIRTY) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+/* ============================================================
+   LOOKUP E UTIL
+   ============================================================ */
+function costruisciLookup() {
+    LOOKUP = { norme: {}, verbi: {}, gruppi: {}, moduli: {}, interventi: {}, ruoli_firma: {}, documenti_commessa: {} };
+    (CATALOGO.norme || []).forEach(n => LOOKUP.norme[n.id] = n);
+    (CATALOGO.verbi || []).forEach(v => LOOKUP.verbi[v.id] = v);
+    (CATALOGO.gruppi || []).forEach(g => LOOKUP.gruppi[g.id] = g);
+    (CATALOGO.moduli || []).forEach(m => LOOKUP.moduli[m.id] = m);
+    (CATALOGO.interventi || []).forEach(i => LOOKUP.interventi[i.id] = i);
+    (CATALOGO.ruoli_firma || []).forEach(r => LOOKUP.ruoli_firma[r.id] = r);
+    (CATALOGO.documenti_commessa || []).forEach(d => LOOKUP.documenti_commessa[d.id] = d);
+}
+
+function esc(s) {
+    if (s === null || s === undefined) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function deepClone(x) { return JSON.parse(JSON.stringify(x)); }
+
+function markDirty() {
+    DIRTY = true;
+    document.getElementById('dirty-indicator').style.display = 'inline-block';
+}
+
+function markClean() {
+    DIRTY = false;
+    document.getElementById('dirty-indicator').style.display = 'none';
+}
+
+function toast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+/* ============================================================
+   INIZIALIZZAZIONE UI
+   ============================================================ */
+function inizializzaUI() {
+    document.getElementById('versione').textContent = CATALOGO.versione_catalogo || '—';
+
+    // Meta
+    document.getElementById('meta-versione').value = CATALOGO.versione_catalogo || '';
+    document.getElementById('meta-data').value = CATALOGO.data_rilascio || '';
+    document.getElementById('meta-fonte').value = CATALOGO.fonte || '';
+    document.getElementById('meta-note').value = CATALOGO.note || '';
+
+    // Filtri
+    const fg = document.getElementById('filter-gruppo');
+    const fdg = document.getElementById('filter-domande-gruppo');
+    (CATALOGO.gruppi || []).forEach(g => {
+        fg.appendChild(new Option(g.nome + ' (' + g.id + ')', g.id));
+        fdg.appendChild(new Option(g.nome, g.id));
+    });
+    const fv = document.getElementById('filter-verbo');
+    (CATALOGO.verbi || []).forEach(v => fv.appendChild(new Option(v.nome, v.id)));
+
+    // Tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+        });
+    });
+
+    // Eventi ricerca
+    document.getElementById('search-interventi').addEventListener('input', renderInterventi);
+    document.getElementById('filter-gruppo').addEventListener('change', renderInterventi);
+    document.getElementById('filter-verbo').addEventListener('change', renderInterventi);
+    document.getElementById('search-documenti_commessa').addEventListener('input', renderDocumentiCommessa);
+    document.getElementById('search-moduli').addEventListener('input', renderModuli);
+    document.getElementById('search-domande').addEventListener('input', renderDomande);
+    document.getElementById('filter-domande-gruppo').addEventListener('change', renderDomande);
+    document.getElementById('search-norme').addEventListener('input', renderNorme);
+
+    renderTutto();
+}
+
+function renderTutto() {
+    document.getElementById('count-interventi').textContent = (CATALOGO.interventi || []).length;
+    document.getElementById('count-documenti_commessa').textContent = (CATALOGO.documenti_commessa || []).length;
+    document.getElementById('count-moduli').textContent = (CATALOGO.moduli || []).length;
+    document.getElementById('count-domande').textContent = (CATALOGO.domande || []).length;
+    document.getElementById('count-norme').textContent = (CATALOGO.norme || []).length;
+    document.getElementById('count-verbi').textContent = (CATALOGO.verbi || []).length;
+    document.getElementById('count-gruppi').textContent = (CATALOGO.gruppi || []).length;
+    document.getElementById('count-ruoli_firma').textContent = (CATALOGO.ruoli_firma || []).length;
+    document.getElementById('count-incompatibilita').textContent = (CATALOGO.incompatibilita || []).length;
+    document.getElementById('count-campi_commessa').textContent = (CATALOGO.campi_commessa || []).length;
+
+    renderInterventi();
+    renderDocumentiCommessa();
+    renderModuli();
+    renderDomande();
+    renderNorme();
+    renderVerbi();
+    renderGruppi();
+    renderRuoliFirma();
+    renderIncompatibilita();
+    renderCampiCommessa();
+}
+
+/* ============================================================
+   RENDER TABELLE (con bottoni Modifica / Elimina)
+   ============================================================ */
+function azioniBtns(sezione, index) {
+    return `<div class="btn-row">
+        <button class="btn btn-primary btn-sm" onclick="apriEditor('${sezione}', ${index})">Modifica</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminaElemento('${sezione}', ${index})">Elimina</button>
+    </div>`;
+}
+
+function renderInterventi() {
+    const q = (document.getElementById('search-interventi').value || '').toLowerCase();
+    const g = document.getElementById('filter-gruppo').value;
+    const v = document.getElementById('filter-verbo').value;
+    const list = (CATALOGO.interventi || [])
+        .map((i, idx) => ({ ...i, _idx: idx }))
+        .filter(i => {
+            if (g && i.gruppo !== g) return false;
+            if (v && i.verbo !== v) return false;
+            if (q && !((i.id + ' ' + i.descrizione + ' ' + i.verbo + ' ' + i.gruppo).toLowerCase().includes(q))) return false;
+            return true;
+        });
+    const c = document.getElementById('table-interventi');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessun intervento.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>ID</th><th>Descrizione</th><th>Verbo</th><th>Gruppo</th><th>Moduli</th><th>Materiali</th></tr></thead><tbody>`;
+    list.forEach(i => {
+        h += `<tr>
+            <td>${azioniBtns('interventi', i._idx)}</td>
+            <td><code>${esc(i.id)}</code></td>
+            <td>${esc(i.descrizione)}</td>
+            <td>${esc(LOOKUP.verbi[i.verbo]?.nome || i.verbo)}</td>
+            <td>${esc(LOOKUP.gruppi[i.gruppo]?.nome || i.gruppo)}</td>
+            <td>${(i.moduli_obbligatori || []).map(m => `<code>${esc(m)}</code>`).join(' ') || '—'}</td>
+            <td>${(i.materiali_richiesti || []).map(m => esc(m.descrizione)).join('<br>') || '—'}</td>
+        </tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+function renderDocumentiCommessa() {
+    const q = (document.getElementById('search-documenti_commessa').value || '').toLowerCase();
+    const list = (CATALOGO.documenti_commessa || [])
+        .map((d, idx) => ({ ...d, _idx: idx }))
+        .filter(d => !q || (d.id + ' ' + d.nome + ' ' + d.tipo).toLowerCase().includes(q));
+    const c = document.getElementById('table-documenti_commessa');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessun documento.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>ID</th><th>Nome</th><th>Tipo</th><th>Ordine</th></tr></thead><tbody>`;
+    list.forEach(d => {
+        h += `<tr>
+            <td>${azioniBtns('documenti_commessa', d._idx)}</td>
+            <td><code>${esc(d.id)}</code></td>
+            <td>${esc(d.nome)}</td>
+            <td><span class="badge badge-info">${esc(d.tipo)}</span></td>
+            <td>${esc(d.ordine)}</td>
+        </tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+function renderModuli() {
+    const q = (document.getElementById('search-moduli').value || '').toLowerCase();
+    const list = (CATALOGO.moduli || [])
+        .map((m, idx) => ({ ...m, _idx: idx }))
+        .filter(m => !q || (m.id + ' ' + m.nome + ' ' + m.tipo).toLowerCase().includes(q));
+    const c = document.getElementById('table-moduli');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessun modulo.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>ID</th><th>Nome</th><th>Tipo</th><th>Template</th></tr></thead><tbody>`;
+    list.forEach(m => {
+        h += `<tr>
+            <td>${azioniBtns('moduli', m._idx)}</td>
+            <td><code>${esc(m.id)}</code></td>
+            <td>${esc(m.nome)}</td>
+            <td><span class="badge badge-secondary">${esc(m.tipo)}</span></td>
+            <td><code>${esc(m.template_riferimento || '—')}</code></td>
+        </tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+function renderDomande() {
+    const q = (document.getElementById('search-domande').value || '').toLowerCase();
+    const g = document.getElementById('filter-domande-gruppo').value;
+    const list = (CATALOGO.domande || [])
+        .map((d, idx) => ({ ...d, _idx: idx }))
+        .filter(d => {
+            if (g && d.gruppo !== g) return false;
+            if (q && !((d.id + ' ' + d.testo).toLowerCase().includes(q))) return false;
+            return true;
+        });
+    const c = document.getElementById('table-domande');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessuna domanda.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>ID</th><th>Testo</th><th>Tipo</th><th>Gruppo</th></tr></thead><tbody>`;
+    list.forEach(d => {
+        h += `<tr>
+            <td>${azioniBtns('domande', d._idx)}</td>
+            <td><code>${esc(d.id)}</code></td>
+            <td>${esc(d.testo)}</td>
+            <td><span class="badge badge-info">${esc(d.tipo)}</span></td>
+            <td>${esc(LOOKUP.gruppi[d.gruppo]?.nome || d.gruppo)}</td>
+        </tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+function renderNorme() {
+    const q = (document.getElementById('search-norme').value || '').toLowerCase();
+    const list = (CATALOGO.norme || [])
+        .map((n, idx) => ({ ...n, _idx: idx }))
+        .filter(n => !q || (n.id + ' ' + n.edizione + ' ' + n.descrizione + ' ' + n.ambito).toLowerCase().includes(q));
+    const c = document.getElementById('table-norme');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessuna norma.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>ID</th><th>Edizione</th><th>Ambito</th><th>Descrizione</th></tr></thead><tbody>`;
+    list.forEach(n => {
+        h += `<tr>
+            <td>${azioniBtns('norme', n._idx)}</td>
+            <td><code>${esc(n.id)}</code></td>
+            <td>${esc(n.edizione)}</td>
+            <td>${esc(n.ambito)}</td>
+            <td>${esc(n.descrizione)}</td>
+        </tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+function renderVerbi() {
+    const list = (CATALOGO.verbi || []).map((v, idx) => ({ ...v, _idx: idx }));
+    const c = document.getElementById('table-verbi');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessun verbo.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>ID</th><th>Nome</th></tr></thead><tbody>`;
+    list.forEach(v => {
+        h += `<tr><td>${azioniBtns('verbi', v._idx)}</td><td><code>${esc(v.id)}</code></td><td>${esc(v.nome)}</td></tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+function renderGruppi() {
+    const list = (CATALOGO.gruppi || []).map((g, idx) => ({ ...g, _idx: idx }));
+    const c = document.getElementById('table-gruppi');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessun gruppo.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>ID</th><th>Nome</th></tr></thead><tbody>`;
+    list.forEach(g => {
+        h += `<tr><td>${azioniBtns('gruppi', g._idx)}</td><td><code>${esc(g.id)}</code></td><td>${esc(g.nome)}</td></tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+function renderRuoliFirma() {
+    const list = (CATALOGO.ruoli_firma || []).map((r, idx) => ({ ...r, _idx: idx }));
+    const c = document.getElementById('table-ruoli_firma');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessun ruolo.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>ID</th><th>Ruolo</th><th>Qualifica</th></tr></thead><tbody>`;
+    list.forEach(r => {
+        h += `<tr>
+            <td>${azioniBtns('ruoli_firma', r._idx)}</td>
+            <td><code>${esc(r.id)}</code></td>
+            <td>${esc(r.ruolo)}</td>
+            <td>${esc(r.qualifica || '—')}</td>
+        </tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+function renderIncompatibilita() {
+    const list = (CATALOGO.incompatibilita || []).map((i, idx) => ({ ...i, _idx: idx }));
+    const c = document.getElementById('table-incompatibilita');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessuna incompatibilità.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>Intervento A</th><th>Intervento B</th><th>Motivo</th></tr></thead><tbody>`;
+    list.forEach(i => {
+        h += `<tr>
+            <td>${azioniBtns('incompatibilita', i._idx)}</td>
+            <td><code>${esc(i.intervento_a)}</code></td>
+            <td><code>${esc(i.intervento_b)}</code></td>
+            <td>${esc(i.motivo)}</td>
+        </tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+function renderCampiCommessa() {
+    const list = (CATALOGO.campi_commessa || []).map((c, idx) => ({ ...c, _idx: idx }));
+    const c = document.getElementById('table-campi_commessa');
+    if (!list.length) { c.innerHTML = '<div class="empty">Nessun campo.</div>'; return; }
+    let h = `<table><thead><tr><th>Azioni</th><th>ID</th><th>Nome</th><th>Tipo</th></tr></thead><tbody>`;
+    list.forEach(campo => {
+        h += `<tr>
+            <td>${azioniBtns('campi_commessa', campo._idx)}</td>
+            <td><code>${esc(campo.id)}</code></td>
+            <td>${esc(campo.nome)}</td>
+            <td><span class="badge badge-info">${esc(campo.tipo)}</span></td>
+        </tr>`;
+    });
+    c.innerHTML = h + '</tbody></table>';
+}
+
+/* ============================================================
+   EDITOR: schema campi per sezione
+   ============================================================ */
+const SCHEMI = {
+    norme: {
+        titolo: 'Norma',
+        campi: [
+            { key: 'id', label: 'ID', tipo: 'text', required: true, hint: 'es. UNI_10411-1_2024' },
+            { key: 'edizione', label: 'Edizione', tipo: 'text', required: true },
+            { key: 'ambito', label: 'Ambito', tipo: 'text', required: true },
+            { key: 'descrizione', label: 'Descrizione', tipo: 'textarea', required: true }
+        ]
+    },
+    verbi: {
+        titolo: 'Verbo',
+        campi: [
+            { key: 'id', label: 'ID', tipo: 'text', required: true, hint: 'es. SOSTITUZIONE' },
+            { key: 'nome', label: 'Nome', tipo: 'text', required: true }
+        ]
+    },
+    gruppi: {
+        titolo: 'Gruppo',
+        campi: [
+            { key: 'id', label: 'ID', tipo: 'text', required: true, hint: 'es. ARGANO' },
+            { key: 'nome', label: 'Nome', tipo: 'text', required: true }
+        ]
+    },
+    moduli: {
+        titolo: 'Modulo',
+        campi: [
+            { key: 'id', label: 'ID', tipo: 'text', required: true, hint: 'es. MOD_DQM' },
+            { key: 'nome', label: 'Nome', tipo: 'text', required: true },
+            { key: 'tipo', label: 'Tipo', tipo: 'text', required: true },
+            { key: 'template_riferimento', label: 'Template riferimento', tipo: 'text', required: false },
+            { key: 'firme_richieste', label: 'Firme richieste (JSON array)', tipo: 'json', required: false, hint: '["RUOLO_X","RUOLO_Y"]' }
+        ]
+    },
+    domande: {
+        titolo: 'Domanda',
+        campi: [
+            { key: 'id', label: 'ID', tipo: 'text', required: true },
+            { key: 'testo', label: 'Testo', tipo: 'textarea', required: true },
+            { key: 'tipo', label: 'Tipo', tipo: 'select', opzioni: ['text','number','boolean','date','enum'], required: true },
+            { key: 'opzioni', label: 'Opzioni (JSON array, solo se tipo=enum)', tipo: 'json', required: false },
+            { key: 'obbligatoria', label: 'Obbligatoria', tipo: 'select', opzioni: ['sempre','in_completa','mai'], required: true },
+            { key: 'gruppo', label: 'Gruppo (ID)', tipo: 'text', required: true },
+            { key: 'condizioni', label: 'Condizioni (JSON)', tipo: 'json', required: false }
+        ]
+    },
+    interventi: {
+        titolo: 'Intervento',
+        campi: [
+            { key: 'id', label: 'ID', tipo: 'text', required: true },
+            { key: 'verbo', label: 'Verbo (ID)', tipo: 'text', required: true },
+            { key: 'gruppo', label: 'Gruppo (ID)', tipo: 'text', required: true },
+            { key: 'descrizione', label: 'Descrizione', tipo: 'textarea', required: true },
+            { key: 'normativa', label: 'Normativa (JSON array di ID norma)', tipo: 'json', required: false },
+            { key: 'moduli_obbligatori', label: 'Moduli obbligatori (JSON array)', tipo: 'json', required: false },
+            { key: 'moduli_condizionali', label: 'Moduli condizionali (JSON array)', tipo: 'json', required: false },
+            { key: 'materiali_richiesti', label: 'Materiali richiesti (JSON array)', tipo: 'json', required: false },
+            { key: 'domande_richieste', label: 'Domande richieste (JSON array)', tipo: 'json', required: false },
+            { key: 'consigli', label: 'Consigli (JSON array di stringhe)', tipo: 'json', required: false }
+        ]
+    },
+    documenti_commessa: {
+        titolo: 'Documento di Commessa',
+        campi: [
+            { key: 'id', label: 'ID', tipo: 'text', required: true },
+            { key: 'nome', label: 'Nome', tipo: 'text', required: true },
+            { key: 'tipo', label: 'Tipo', tipo: 'text', required: true },
+            { key: 'condizioni_derivazione', label: 'Condizioni derivazione (JSON)', tipo: 'json', required: true },
+            { key: 'firme_richieste', label: 'Firme richieste (JSON array)', tipo: 'json', required: false },
+            { key: 'ordine', label: 'Ordine', tipo: 'number', required: true },
+            { key: 'dipendenze', label: 'Dipendenze (JSON array di ID)', tipo: 'json', required: false }
+        ]
+    },
+    ruoli_firma: {
+        titolo: 'Ruolo Firma',
+        campi: [
+            { key: 'id', label: 'ID', tipo: 'text', required: true },
+            { key: 'ruolo', label: 'Ruolo', tipo: 'text', required: true },
+            { key: 'qualifica', label: 'Qualifica', tipo: 'text', required: false },
+            { key: 'documenti_firmati', label: 'Documenti firmati (JSON array)', tipo: 'json', required: false }
+        ]
+    },
+    incompatibilita: {
+        titolo: 'Incompatibilità',
+        campi: [
+            { key: 'intervento_a', label: 'Intervento A (ID)', tipo: 'text', required: true },
+            { key: 'intervento_b', label: 'Intervento B (ID)', tipo: 'text', required: true },
+            { key: 'motivo', label: 'Motivo', tipo: 'textarea', required: true },
+            { key: 'riferimento_normativo', label: 'Riferimento normativo (ID)', tipo: 'text', required: false },
+            { key: 'suggerimento_alternativo', label: 'Suggerimento alternativo (ID)', tipo: 'text', required: false }
+        ]
+    },
+    campi_commessa: {
+        titolo: 'Campo di Commessa',
+        campi: [
+            { key: 'id', label: 'ID', tipo: 'text', required: true },
+            { key: 'nome', label: 'Nome', tipo: 'text', required: true },
+            { key: 'tipo', label: 'Tipo', tipo: 'select', opzioni: ['text','number','boolean','date','enum'], required: true },
+            { key: 'opzioni', label: 'Opzioni (JSON array, solo se enum)', tipo: 'json', required: false }
+        ]
+    }
+};
+
+/* ============================================================
+   EDITOR: apertura / salvataggio / chiusura
+   ============================================================ */
+function apriEditor(sezione, index) {
+    const schema = SCHEMI[sezione];
+    if (!schema) { toast('Sezione non supportata: ' + sezione, true); return; }
+    const isNew = index === null;
+    const item = isNew ? {} : deepClone(CATALOGO[sezione][index]);
+    EDITOR_STATE = { sezione, index };
+
+    document.getElementById('modal-title').textContent =
+        (isNew ? 'Nuovo ' : 'Modifica ') + schema.titolo;
+
+    const body = document.getElementById('modal-body');
+    let html = '';
+    schema.campi.forEach(c => {
+        const val = item[c.key];
+        const displayVal = (c.tipo === 'json')
+            ? (val === undefined || val === null ? '' : JSON.stringify(val, null, 2))
+            : (val === undefined || val === null ? '' : val);
+        html += `<div class="form-row" id="fr-${c.key}">
+            <label>${esc(c.label)}${c.required ? ' <span class="required">*</span>' : ''}</label>`;
+        if (c.tipo === 'textarea') {
+            html += `<textarea id="ed-${c.key}">${esc(displayVal)}</textarea>`;
+        } else if (c.tipo === 'select') {
+            html += `<select id="ed-${c.key}">`;
+            c.opzioni.forEach(o => {
+                html += `<option value="${esc(o)}"${o === val ? ' selected' : ''}>${esc(o)}</option>`;
+            });
+            html += `</select>`;
+        } else if (c.tipo === 'json') {
+            html += `<textarea id="ed-${c.key}" placeholder='${esc(c.hint || '')}'>${esc(displayVal)}</textarea>`;
+        } else if (c.tipo === 'number') {
+            html += `<input type="number" id="ed-${c.key}" value="${esc(displayVal)}">`;
+        } else {
+            html += `<input type="text" id="ed-${c.key}" value="${esc(displayVal)}">`;
+        }
+        if (c.hint) html += `<div class="hint">${esc(c.hint)}</div>`;
+        html += `<div class="error-msg" id="err-${c.key}" style="display:none;"></div></div>`;
+    });
+    body.innerHTML = html;
+    document.getElementById('modal-overlay').classList.add('open');
+}
+
+function chiudiEditor() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    EDITOR_STATE = { sezione: null, index: null };
+}
+
+function salvaEditor() {
+    const { sezione, index } = EDITOR_STATE;
+    const schema = SCHEMI[sezione];
+    if (!schema) return;
+    const isNew = index === null;
+
+    const nuovo = isNew ? {} : deepClone(CATALOGO[sezione][index]);
+    let ok = true;
+
+    schema.campi.forEach(c => {
+        const el = document.getElementById('ed-' + c.key);
+        const fr = document.getElementById('fr-' + c.key);
+        const err = document.getElementById('err-' + c.key);
+        fr.classList.remove('invalid');
+        err.style.display = 'none';
+
+        let raw = el.value;
+        let val;
+
+        if (c.tipo === 'json') {
+            if (raw.trim() === '') { val = undefined; }
+            else {
+                try { val = JSON.parse(raw); }
+                catch (e) {
+                    ok = false;
+                    fr.classList.add('invalid');
+                    err.textContent = 'JSON non valido: ' + e.message;
+                    err.style.display = 'block';
+                    return;
+                }
+            }
+        } else if (c.tipo === 'number') {
+            if (raw.trim() === '') { val = undefined; }
+            else if (isNaN(Number(raw))) {
+                ok = false;
+                fr.classList.add('invalid');
+                err.textContent = 'Numero non valido';
+                err.style.display = 'block';
+                return;
+            } else { val = Number(raw); }
+        } else {
+            val = raw === '' ? undefined : raw;
+        }
+
+        if (c.required && (val === undefined || val === null || val === '')) {
+            ok = false;
+            fr.classList.add('invalid');
+            err.textContent = 'Campo obbligatorio';
+            err.style.display = 'block';
+            return;
+        }
+
+        if (val === undefined) { delete nuovo[c.key]; }
+        else { nuovo[c.key] = val; }
+    });
+
+    if (!ok) { toast('Correggi gli errori evidenziati', true); return; }
+
+    // Controllo ID univoco
+    const idField = nuovo.id;
+    if (idField) {
+        const collisione = (CATALOGO[sezione] || []).some((el, i) =>
+            i !== index && el.id === idField
+        );
+        if (collisione) {
+            const fr = document.getElementById('fr-id');
+            const err = document.getElementById('err-id');
+            fr.classList.add('invalid');
+            err.textContent = 'ID già esistente nella sezione ' + sezione;
+            err.style.display = 'block';
+            toast('ID duplicato', true);
+            return;
+        }
+    }
+
+    if (isNew) {
+        if (!CATALOGO[sezione]) CATALOGO[sezione] = [];
+        CATALOGO[sezione].push(nuovo);
+    } else {
+        CATALOGO[sezione][index] = nuovo;
+    }
+
+    markDirty();
+    costruisciLookup();
+    renderTutto();
+    chiudiEditor();
+    toast('Salvato');
+}
+
+/* ============================================================
+   ELIMINA
+   ============================================================ */
+function eliminaElemento(sezione, index) {
+    const item = CATALOGO[sezione][index];
+    const label = item.id || item.nome || item.descrizione || ('#' + index);
+    CONFIRM_CALLBACK = () => {
+        CATALOGO[sezione].splice(index, 1);
+        markDirty();
+        costruisciLookup();
+        renderTutto();
+        toast('Eliminato');
+    };
+    document.getElementById('confirm-title').textContent = 'Conferma eliminazione';
+    document.getElementById('confirm-body').innerHTML =
+        `<p>Eliminare <strong>${esc(label)}</strong> dalla sezione <code>${esc(sezione)}</code>?</p>
+         <p style="color:var(--danger);font-size:0.9em;">L'operazione non è reversibile (a meno di reimportare il JSON).</p>`;
+    document.getElementById('confirm-ok-btn').onclick = () => {
+        const cb = CONFIRM_CALLBACK;
+        chiudiConferma();
+        if (cb) cb();
+    };
+    document.getElementById('confirm-overlay').classList.add('open');
+}
+
+function chiudiConferma() {
+    document.getElementById('confirm-overlay').classList.remove('open');
+    CONFIRM_CALLBACK = null;
+}
+
+/* ============================================================
+   META
+   ============================================================ */
+function salvaMeta() {
+    CATALOGO.versione_catalogo = document.getElementById('meta-versione').value.trim() || '0.0.0';
+    CATALOGO.data_rilascio = document.getElementById('meta-data').value.trim();
+    CATALOGO.fonte = document.getElementById('meta-fonte').value.trim();
+    CATALOGO.note = document.getElementById('meta-note').value.trim();
+    document.getElementById('versione').textContent = CATALOGO.versione_catalogo;
+    markDirty();
+    toast('Metadati salvati');
+}
+
+/* ============================================================
+   VALIDAZIONE
+   ============================================================ */
+function validaCatalogo() {
+    const problemi = [];
+    const avvisi = [];
+    const sezioniConId = ['norme','verbi','gruppi','moduli','domande','interventi','documenti_commessa','ruoli_firma','campi_commessa'];
+
+    // ID duplicati
+    sezioniConId.forEach(s => {
+        const visti = {};
+        (CATALOGO[s] || []).forEach((el, i) => {
+            if (!el.id) { problemi.push(`${s}[${i}]: manca id`); return; }
+            if (visti[el.id]) problemi.push(`${s}: id duplicato "${el.id}"`);
+            visti[el.id] = true;
+        });
+    });
+
+    // Riferimenti
+    const checkRef = (val, coll, dove) => {
+        if (val === undefined || val === null) return;
+        if (!LOOKUP[coll] || !LOOKUP[coll][val]) {
+            avvisi.push(`${dove}: riferimento a ${coll} inesistente "${val}"`);
+        }
+    };
+    (CATALOGO.interventi || []).forEach(i => {
+        checkRef(i.verbo, 'verbi', `intervento ${i.id}`);
+        checkRef(i.gruppo, 'gruppi', `intervento ${i.id}`);
+        (i.normativa || []).forEach(n => checkRef(n, 'norme', `intervento ${i.id}`));
+        (i.moduli_obbligatori || []).forEach(m => checkRef(m, 'moduli', `intervento ${i.id}`));
+    });
+    (CATALOGO.domande || []).forEach(d => {
+        checkRef(d.gruppo, 'gruppi', `domanda ${d.id}`);
+    });
+    (CATALOGO.incompatibilita || []).forEach((x, i) => {
+        checkRef(x.intervento_a, 'interventi', `incompatibilita[${i}]`);
+        checkRef(x.intervento_b, 'interventi', `incompatibilita[${i}]`);
+    });
+
+    const box = document.getElementById('validation-result');
+    if (!problemi.length && !avvisi.length) {
+        box.innerHTML = `<div class="validation-panel ok"><h4>✓ Catalogo valido</h4><p>Nessun problema rilevato.</p></div>`;
+        return;
+    }
+    let h = `<div class="validation-panel"><h4>Validazione</h4>`;
+    if (problemi.length) {
+        h += `<p><strong>Errori (${problemi.length}):</strong></p><ul>` +
+             problemi.map(p => `<li>${esc(p)}</li>`).join('') + `</ul>`;
+    }
+    if (avvisi.length) {
+        h += `<p><strong>Avvisi (${avvisi.length}):</strong></p><ul>` +
+             avvisi.map(a => `<li>${esc(a)}</li>`).join('') + `</ul>`;
+    }
+    h += `</div>`;
+    box.innerHTML = h;
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ============================================================
+   EXPORT / IMPORT
+   ============================================================ */
+function esportaJSON() {
+    const blob = new Blob([JSON.stringify(CATALOGO, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'catalogo_' + (CATALOGO.versione_catalogo || 'export') + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    markClean();
+    toast('Esportato');
+}
+
+function importaJSON() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                const data = JSON.parse(reader.result);
+                if (!data || typeof data !== 'object') throw new Error('JSON non è un oggetto');
+                CONFIRM_CALLBACK = () => {
+                    CATALOGO = data;
+                    costruisciLookup();
+                    // Reset filtri
+                    ['filter-gruppo','filter-verbo','filter-domande-gruppo'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.innerHTML = el.options[0] ? el.options[0].outerHTML : '';
+                    });
+                    inizializzaUI();
+                    markDirty();
+                    toast('Importato');
+                };
+                document.getElementById('confirm-title').textContent = 'Conferma importazione';
+                document.getElementById('confirm-body').innerHTML =
+                    `<p>Importare il file <strong>${esc(f.name)}</strong>?</p>
+                     <p style="color:var(--danger);font-size:0.9em;">Il catalogo attuale in memoria verrà sostituito.</p>`;
+                document.getElementById('confirm-ok-btn').onclick = () => {
+                    const cb = CONFIRM_CALLBACK;
+                    chiudiConferma();
+                    if (cb) cb();
+                };
+                document.getElementById('confirm-overlay').classList.add('open');
+            } catch (err) {
+                toast('JSON non valido: ' + err.message, true);
+            }
+        };
+        reader.readAsText(f);
+    };
+    input.click();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DC Generator - Documentazione Tecnica Automatica</title>
+    <style>
+        /* IL TUO CSS ORIGINALE (Intatto) + Aggiunte per le Schede */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        .header { background: linear-gradient(135deg, #1a2a6c, #2d4373); color: #fff; padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .logo h1 { font-size: 24px; font-weight: 700; }
+        .logo .subtitle { font-size: 12px; opacity: 0.8; display: block; }
+        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-primary { background: #3498db; color: #fff; } .btn-primary:hover { background: #2980b9; transform: translateY(-1px); }
+        .btn-success { background: #2ecc71; color: #fff; } .btn-success:hover { background: #27ae60; transform: translateY(-1px); }
+        .btn-warning { background: #f39c12; color: #fff; }
+        .btn-danger { background: #e74c3c; color: #fff; }
+        .btn-outline { background: transparent; border: 2px solid #3498db; color: #3498db; } .btn-outline:hover { background: #3498db; color: #fff; }
+        .btn-white { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        
+        .card { background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .view { display: none; animation: fadeIn 0.3s ease; } .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; }
+        .quick-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px; }
+        .stat-item { text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px; }
+        .stat-item .number { font-size: 28px; font-weight: 700; color: #2c3e50; }
+        .stat-item .label { font-size: 12px; color: #7f8c8d; }
+        
+        .wizard-container { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 30px; margin: 20px 0; }
+        .wizard-progress { display: flex; justify-content: space-between; margin-bottom: 35px; position: relative; padding: 0 20px; }
+        .wizard-progress::before { content: ''; position: absolute; top: 20px; left: 50px; right: 50px; height: 3px; background: #e0e0e0; z-index: 0; border-radius: 2px; }
+        .step { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; cursor: pointer; flex: 1; }
+        .step-number { width: 40px; height: 40px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #999; transition: all 0.4s ease; font-size: 16px; }
+        .step.active .step-number { background: #3498db; color: #fff; box-shadow: 0 4px 12px rgba(52,152,219,0.4); transform: scale(1.05); }
+        .step.completed .step-number { background: #2ecc71; color: #fff; }
+        .step-label { font-size: 12px; margin-top: 8px; color: #999; font-weight: 500; text-align: center; }
+        .step.active .step-label { color: #3498db; font-weight: 600; }
+        .step.completed .step-label { color: #2ecc71; }
+        
+        .step-content { display: none; animation: fadeIn 0.4s ease; } .step-content.active { display: block; }
+        .step-header { margin-bottom: 25px; } .step-header h2 { font-size: 24px; color: #2c3e50; } .step-header p { color: #7f8c8d; font-size: 15px; }
+        .step-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0; flex-wrap: wrap; gap: 10px; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; } .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-size: 14px; font-weight: 600; margin-bottom: 5px; color: #2c3e50; }
+        .form-group .required { color: #e74c3c; }
+        .form-group input, .form-group select { padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; transition: all 0.3s ease; background: #fafafa; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #3498db; background: #fff; box-shadow: 0 0 0 3px rgba(52,152,219,0.1); }
+        
+        .search-box { display: flex; gap: 12px; margin-bottom: 20px; }
+        .search-box input { flex: 1; padding: 12px 18px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; }
+        .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filters select { padding: 8px 14px; border: 2px solid #e0e0e0; border-radius: 8px; background: #fafafa; font-size: 14px; }
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-height: 350px; overflow-y: auto; margin-bottom: 20px; }
+        .intervention-item { padding: 12px 16px; background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
+        .intervention-item:hover { background: #e9ecef; border-color: #3498db; }
+        .intervention-item.selected { background: #d4edda; border-color: #28a745; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-right: 4px; }
+        .badge-modulo { background: #3498db; color: #fff; } .badge-gruppo { background: #6c757d; color: #fff; } .badge-tracciabilita { background: #f39c12; color: #fff; } .badge-verbo { background: #1abc9c; color: #fff; }
+        
+        .guide-box { background: #e8f4f8; border-left: 4px solid #3498db; padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0; display: flex; justify-content: space-between; align-items: center; }
+        .guide-box.warning { background: #fff3cd; border-left-color: #f39c12; }
+        .guide-box.danger { background: #f8d7da; border-left-color: #e74c3c; }
+        .guide-box.success { background: #d4edda; border-left-color: #2ecc71; }
+        .riepilogo-section { margin-bottom: 20px; } .riepilogo-section h4 { color: #2c3e50; border-bottom: 2px solid #2ecc71; padding-bottom: 8px; margin-bottom: 12px; }
+        .doc-tag { display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; margin: 4px; }
+        .doc-tag.obbligatorio { background: #3498db; color: #fff; } .doc-tag.interno { background: #6c757d; color: #fff; } .doc-tag.mancante { background: #e74c3c; color: #fff; }
+        
+        .recent-item { padding: 12px 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; border-radius: 6px; }
+        .recent-item:hover { background: #f8f9fa; }
+        .notification { padding: 15px 20px; border-radius: 6px; margin-bottom: 15px; display: none; font-weight: 500; }
+        .notification.error { display: block; background: #f8d7da; color: #721c24; }
+        .notification.success { display: block; background: #d4edda; color: #155724; }
+        .empty { color: #999; text-align: center; padding: 30px; }
+
+        /* NUOVE CLASSI PER LE SCHEDE INTERVENTO */
+        .scheda-intervento { border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 15px; background: #fff; overflow: hidden; }
+        .scheda-header { background: #f8f9fa; padding: 15px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+        .scheda-header:hover { background: #eef1f4; }
+        .scheda-header h4 { margin: 0; color: #2c3e50; font-size: 16px; }
+        .scheda-body { padding: 20px; display: none; }
+        .scheda-body.active { display: block; }
+        .scheda-section { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #eee; }
+        .scheda-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .scheda-section h5 { font-size: 14px; color: #7f8c8d; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
+        
+        .cds-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 13px; }
+        .cds-table th, .cds-table td { padding: 8px; border: 1px solid #eee; text-align: left; }
+        .cds-table th { background: #f8f9fa; }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid, .form-grid, .results-grid { grid-template-columns: 1fr; }
+            .wizard-progress { flex-wrap: wrap; gap: 10px; } .wizard-progress::before { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>📄 DC Generator</h1>
+                    <span class="subtitle">Generazione automatica Dichiarazioni di Conformità</span>
+                </div>
+                <div class="header-actions">
+                    <span id="cartella-status" style="font-size:12px; align-self:center; margin-right:10px; color:#e0e0e0;">📁 Nessuna cartella</span>
+                    <button class="btn btn-white" onclick="app.scegliCartella()">📁 Scegli Cartella</button>
+                    <button class="btn btn-primary" onclick="app.nuovaCommessa()">➕ Nuova Commessa</button>
+                    <button class="btn btn-outline" onclick="window.open('catalogo.html', '_blank')">📦 Catalogo</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div id="notification" class="notification"></div>
+
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="view active">
+                <div class="dashboard-grid">
+                    <div class="card welcome-card">
+                        <h2>👋 Benvenuto</h2>
+                        <p>Crea una nuova Dichiarazione di Conformità in pochi minuti.</p>
+                        <div class="quick-actions">
+                            <button class="btn btn-success" onclick="app.nuovaCommessa()">➕ Nuova Commessa</button>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item"><div class="number" id="dash-interventi">0</div><div class="label">Interventi</div></div>
+                            <div class="stat-item"><div class="number" id="dash-gruppi">0</div><div class="label">Gruppi</div></div>
+                            <div class="stat-item"><div class="number" id="dash-moduli">0</div><div class="label">Moduli</div></div>
+                            <div class="stat-item"><div class="number" id="dash-commesse">0</div><div class="label">Commesse</div></div>
+                        </div>
+                    </div>
+                    <div class="card recent-card">
+                        <h3>📁 Progetti Salvati</h3>
+                        <div id="recenti" style="max-height: 400px; overflow-y: auto;"><p class="empty">Nessun progetto. Scegli una cartella o creane uno nuovo.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WIZARD -->
+            <div id="wizard" class="view">
+                <div class="wizard-container">
+                    <div id="guida-box" class="guide-box">
+                        <div>
+                            <strong id="guida-title" style="font-size:16px;">Guida</strong>
+                            <p id="guida-message" style="font-size:14px; margin:0;">In attesa di dati...</p>
+                        </div>
+                        <button id="guida-btn" class="btn btn-sm btn-primary" style="display:none;" onclick="app.vaiAlPassoCorrente()">Vai</button>
+                    </div>
+
+                    <div class="wizard-progress">
+                        <div class="step active" data-step="1"><span class="step-number">1</span><span class="step-label">Impianto</span></div>
+                        <div class="step" data-step="2"><span class="step-number">2</span><span class="step-label">Intervento</span></div>
+                        <div class="step" data-step="3"><span class="step-number">3</span><span class="step-label">Schede Lavoro</span></div>
+                        <div class="step" data-step="4"><span class="step-number">4</span><span class="step-label">Riepilogo</span></div>
+                    </div>
+
+                    <div class="wizard-content">
+                        <!-- STEP 1: ANAGRAFICA -->
+                        <div id="step-1" class="step-content active">
+                            <div class="step-header"><h2>🏢 Anagrafica Impianto</h2><p>Inserisci i dati dell'impianto e i tecnici.</p></div>
+                            <div class="step-body"><div class="form-grid" id="form-anagrafica-container"></div></div>
+                            <div class="step-footer"><button class="btn btn-primary" onclick="app.nextStep()">Continua →</button></div>
+                        </div>
+
+                        <!-- STEP 2: INTERVENTI -->
+                        <div id="step-2" class="step-content">
+                            <div class="step-header"><h2>🔧 Selezione Intervento</h2><p>Cosa hai fatto sull'impianto? Cerca e seleziona gli interventi.</p></div>
+                            <div class="step-body">
+                                <div class="search-box">
+                                    <input type="text" id="ricerca_intervento" placeholder="Cerca intervento..." onkeyup="app.cercaInterventi()">
+                                </div>
+                                <div class="filters">
+                                    <select id="filtro_verbo" onchange="app.filtraInterventi()"><option value="">Tutti i verbi</option></select>
+                                    <select id="filtro_gruppo" onchange="app.filtraInterventi()"><option value="">Tutti i gruppi</option></select>
+                                </div>
+                                <div id="risultati_interventi" class="results-grid"></div>
+                                <div style="margin-top:20px; padding:15px; background:#f8f9fa; border-radius:8px;">
+                                    <h4>📌 Interventi selezionati (<span id="selected-count">0</span>)</h4>
+                                    <div id="selected-list"></div>
+                                </div>
+                            </div>
+                            <div class="step-footer"><button class="btn btn-outline" onclick="app.prevStep()">← Indietro</button><button class="btn btn-primary" onclick="app.nextStep()">Continua →</button></div>
+                        </div>
+
+                        <!-- STEP 3: SCHEDE INTERVENTO (Fusione di Questionario + Materiali) -->
+                        <div id="step-3" class="step-content">
+                            <div class="step-header"><h2>📝 Schede di Lavoro</h2><p>Compila i dettagli per ogni intervento che hai selezionato.</p></div>
+                            <div class="step-body" id="schede-container"></div>
+                            <div class="step-footer"><button class="btn btn-outline" onclick="app.prevStep()">← Indietro</button><button class="btn btn-primary" onclick="app.nextStep()">Continua →</button></div>
+                        </div>
+
+                        <!-- STEP 4: RIEPILOGO -->
+                        <div id="step-4" class="step-content">
+                            <div class="step-header"><h2>📋 Riepilogo e Generazione</h2><p>Verifica i documenti derivati e chiudi la commessa.</p></div>
+                            <div class="step-body"><div id="riepilogo-container"></div></div>
+                            <div class="step-footer">
+                                <button class="btn btn-outline" onclick="app.prevStep()">← Indietro</button>
+                                <div style="display:flex; gap:10px;">
+                                    <button class="btn btn-primary" onclick="app.salvaBozza()">💾 Salva Bozza</button>
+                                    <button id="btn-emetti" class="btn btn-success" onclick="app.emettiDC()">✅ Emetti DC</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/engine/motoreDomande.js"></script>
+    <script src="js/engine/motoreDocumentale.js"></script>
+    <script src="js/engine/motoreGuida.js"></script>
+    <script src="js/persistence/progettoRepository.js"></script>
+    
+    <script>
+        class AppDC {
+            constructor() {
+                this.repository = new ProgettoRepository();
+                this.recordCorrente = this._creaRecordVuoto();
+                this.catalogo = null;
+                this.stepCorrente = 1;
+                this.guidaCorrente = null;
+                this.schedaAperta = null; // Per sapere quale scheda intervento è espansa
+            }
+
+            async init() {
+                try {
+                    const res = await fetch('data/catalogo.json');
+                    this.catalogo = await res.json();
+                } catch (e) {
+                    const saved = localStorage.getItem('catalogo_interventi');
+                    if (saved) this.catalogo = JSON.parse(saved);
+                }
+
+                if (!this.catalogo) {
+                    this.notify('⚠️ Catalogo non trovato.', 'error');
+                    return;
+                }
+
+                const nome = await this.repository.ripristinaCartella();
+                if (nome) this.setCartella(nome);
+
+                this.aggiornaStats();
+                this.aggiornaProgetti();
+                this.popolaFiltri();
+            }
+
+            _creaRecordVuoto() {
+                return { 
+                    uuid: crypto.randomUUID(), commessa: '', stato: 'bozza', 
+                    anagrafica: {}, tecnici: { supervisore: '', commerciale: '', responsabile: '' },
+                    date: { inizio_lavori: '', fine_lavori: '' },
+                    interventi_scelti: [], risposte: {}, materiali: [], _meta: {} 
+                };
+            }
+
+            notify(msg, type = 'info') {
+                const el = document.getElementById('notification');
+                el.className = `notification ${type}`;
+                el.textContent = msg;
+                el.style.display = 'block';
+                setTimeout(() => el.style.display = 'none', 4000);
+            }
+
+            async scegliCartella() {
+                const nome = await this.repository.scegliCartella();
+                if (nome) this.setCartella(nome);
+            }
+
+            setCartella(nome) {
+                document.getElementById('cartella-status').textContent = `📁 ${nome}`;
+                this.aggiornaProgetti();
+            }
+
+            aggiornaStats() {
+                document.getElementById('dash-interventi').textContent = this.catalogo.interventi?.length || 0;
+                document.getElementById('dash-gruppi').textContent = this.catalogo.gruppi?.length || 0;
+                document.getElementById('dash-moduli').textContent = this.catalogo.moduli?.length || 0;
+            }
+
+            async aggiornaProgetti() {
+                const list = document.getElementById('recenti');
+                if (!this.repository.dirHandle) {
+                    list.innerHTML = '<p class="empty">Scegli una cartella per vedere i progetti.</p>';
+                    return;
+                }
+                const files = await this.repository.elencaProgetti();
+                document.getElementById('dash-commesse').textContent = files.length;
+                
+                if (files.length === 0) {
+                    list.innerHTML = '<p class="empty">Nessun progetto in questa cartella.</p>';
+                    return;
+                }
+                list.innerHTML = files.map(f => `
+                    <div class="recent-item" onclick="app.caricaProgetto('${f.nomeFile}')">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>${f.commessa || 'Senza Commessa'}</strong>
+                            <span class="badge ${f.stato === 'emessa' ? 'badge-modulo' : 'badge-gruppo'}">${f.stato}</span>
+                        </div>
+                        <div style="font-size:12px; color:#666;">${f.cliente || 'N/D'} | v${f.versione} | ${new Date(f.data).toLocaleDateString()}</div>
+                    </div>
+                `).join('');
+            }
+
+            nuovaCommessa() {
+                this.recordCorrente = this._creaRecordVuoto();
+                this.stepCorrente = 1;
+                this.schedaAperta = null;
+                this.mostraView('wizard');
+                this.renderStep();
+            }
+
+            async caricaProgetto(nomeFile) {
+                const rec = await this.repository.caricaRecord(nomeFile);
+                if (rec) {
+                    rec.tecnici = rec.tecnici || { supervisore: '', commerciale: '', responsabile: '' };
+                    rec.date = rec.date || { inizio_lavori: '', fine_lavori: '' };
+                    this.recordCorrente = rec;
+                    this.stepCorrente = 1;
+                    this.schedaAperta = null;
+                    this.mostraView('wizard');
+                    this.renderStep();
+                    this.notify('Progetto caricato', 'success');
+                }
+            }
+
+            mostraView(id) {
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+            }
+
+            nextStep() { if (this.stepCorrente < 4) { this.stepCorrente++; this.renderStep(); } }
+            prevStep() { if (this.stepCorrente > 1) { this.stepCorrente--; this.renderStep(); } }
+            
+            vaiAlPassoCorrente() {
+                const map = { 'anagrafica': 1, 'interventi': 2, 'risposte': 3, 'materiali': 3, 'riepilogo': 4, 'documenti': 4 };
+                const step = map[this.guidaCorrente.prossimo_passo.sezione] || 1;
+                this.stepCorrente = step;
+                this.renderStep();
+            }
+
+            renderStep() {
+                document.querySelectorAll('.step').forEach(el => {
+                    const s = parseInt(el.dataset.step);
+                    el.className = s === this.stepCorrente ? 'step active' : (s < this.stepCorrente ? 'step completed' : 'step');
+                });
+                document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+                document.getElementById(`step-${this.stepCorrente}`).classList.add('active');
+
+                const outA3 = calcolaDomande(this.recordCorrente, this.catalogo);
+                const outA4 = calcolaDocumenti(this.recordCorrente, this.catalogo);
+                this.guidaCorrente = calcolaGuida(this.recordCorrente, this.catalogo, outA3, outA4);
+
+                this.aggiornaGuidaUI();
+
+                if (this.stepCorrente === 1) this.renderAnagrafica();
+                if (this.stepCorrente === 2) this.renderInterventi();
+                if (this.stepCorrente === 3) this.renderSchede(outA3);
+                if (this.stepCorrente === 4) this.renderRiepilogo(outA4);
+            }
+
+            aggiornaGuidaUI() {
+                const box = document.getElementById('guida-box');
+                const title = document.getElementById('guida-title');
+                const msg = document.getElementById('guida-message');
+                const btn = document.getElementById('guida-btn');
+                const btnEmetti = document.getElementById('btn-emetti');
+
+                const stato = this.guidaCorrente.stato;
+                const passo = this.guidaCorrente.prossimo_passo;
+
+                if (stato === 'pronto_per_emissione' || (stato === 'completo' && this.recordCorrente.stato !== 'emessa')) {
+                    btnEmetti.disabled = false; btnEmetti.style.opacity = '1';
+                } else if (this.recordCorrente.stato === 'emessa') {
+                    btnEmetti.disabled = true; btnEmetti.textContent = '✅ Già Emessa'; btnEmetti.style.opacity = '0.5';
+                } else {
+                    btnEmetti.disabled = true; btnEmetti.style.opacity = '0.5';
+                }
+
+                if (stato === 'pronto_per_emissione') {
+                    box.className = 'guide-box success'; title.textContent = '✅ Pronto!'; msg.textContent = 'Tutti i dati sono completi. Puoi emettere la DC.';
+                    btn.style.display = 'none';
+                } else if (stato === 'incoerente') {
+                    box.className = 'guide-box danger'; title.textContent = '⚠️ Attenzione'; msg.textContent = passo.motivo;
+                    btn.style.display = 'block'; btn.textContent = 'Risolvi';
+                } else if (stato === 'incompleto') {
+                    box.className = 'guide-box warning'; title.textContent = '📌 Da completare'; msg.textContent = passo.motivo;
+                    btn.style.display = 'block'; btn.textContent = 'Vai';
+                } else {
+                    box.className = 'guide-box success'; title.textContent = '✅ Completo'; msg.textContent = 'Puoi emettere la DC o rivedere i documenti.';
+                    btn.style.display = 'none';
+                }
+            }
+
+            renderAnagrafica() {
+                const container = document.getElementById('form-anagrafica-container');
+                let html = '';
+                
+                (this.catalogo.anagrafica_schema || []).forEach(c => {
+                    const val = this.recordCorrente.anagrafica[c.id] || '';
+                    html += `<div class="form-group ${c.tipo === 'text' && c.nome.includes('Indirizzo') ? 'full-width' : ''}">
+                        <label>${c.nome} ${c.obbligatorio_in.includes('bozza') ? '<span class="required">*</span>' : ''}</label>`;
+                    if (c.tipo === 'enum') {
+                        html += `<select onchange="app.setAnagrafica('${c.id}', this.value)">
+                            <option value="">Seleziona...</option>
+                            ${c.opzioni.map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('')}
+                        </select>`;
+                    } else {
+                        html += `<input type="${c.tipo}" value="${val}" onchange="app.setAnagrafica('${c.id}', this.value)">`;
+                    }
+                    html += `</div>`;
+                });
+
+                html += `<div class="form-group full-width" style="margin-top:20px; border-top:1px solid #ddd; padding-top:15px;"><h4>Tecnici</h4></div>`;
+                ['supervisore', 'commerciale', 'responsabile'].forEach(t => {
+                    html += `<div class="form-group">
+                        <label>${t.charAt(0).toUpperCase() + t.slice(1)}</label>
+                        <input type="text" value="${this.recordCorrente.tecnici[t] || ''}" onchange="app.setTecnico('${t}', this.value)">
+                    </div>`;
+                });
+
+                html += `<div class="form-group full-width" style="margin-top:20px; border-top:1px solid #ddd; padding-top:15px;"><h4>Date</h4></div>`;
+                ['inizio_lavori', 'fine_lavori'].forEach(d => {
+                    html += `<div class="form-group">
+                        <label>${d === 'inizio_lavori' ? 'Inizio Lavori' : 'Fine Lavori'}</label>
+                        <input type="date" value="${this.recordCorrente.date[d] || ''}" onchange="app.setData('${d}', this.value)">
+                    </div>`;
+                });
+
+                container.innerHTML = html;
+            }
+
+            setAnagrafica(id, val) { this.recordCorrente.anagrafica[id] = val; if (id === 'num_imp_esa') this.recordCorrente.commessa = val; this.renderStep(); }
+            setTecnico(ruolo, val) { this.recordCorrente.tecnici[ruolo] = val; this.renderStep(); }
+            setData(tipo, val) { this.recordCorrente.date[tipo] = val; this.renderStep(); }
+
+            popolaFiltri() {
+                const sv = document.getElementById('filtro_verbo');
+                const sg = document.getElementById('filtro_gruppo');
+                if(!sv || !sg) return;
+                sv.innerHTML = '<option value="">Tutti i verbi</option>' + (this.catalogo.verbi || []).map(v => `<option value="${v.id}">${v.nome || v.id}</option>`).join('');
+                sg.innerHTML = '<option value="">Tutti i gruppi</option>' + (this.catalogo.gruppi || []).map(g => `<option value="${g.id}">${g.nome || g.id}</option>`).join('');
+            }
+
+            renderInterventi() {
+                const container = document.getElementById('risultati_interventi');
+                const query = document.getElementById('ricerca_intervento')?.value.toLowerCase() || '';
+                const verbo = document.getElementById('filtro_verbo')?.value;
+                const gruppo = document.getElementById('filtro_gruppo')?.value;
+
+                let lista = this.catalogo.interventi || [];
+                if (query) lista = lista.filter(i => i.descrizione.toLowerCase().includes(query));
+                if (verbo) lista = lista.filter(i => i.verbo === verbo);
+                if (gruppo) lista = lista.filter(i => i.gruppo === gruppo);
+
+                container.innerHTML = lista.slice(0, 50).map(i => {
+                    const sel = this.recordCorrente.interventi_scelti.some(x => x.id === i.id);
+                    const moduli = (i.moduli_obbligatori || []).map(m => `<span class="badge badge-modulo">${m}</span>`).join('');
+                    const cdS = (i.materiali_richiesti || []).length > 0 ? `<span class="badge badge-tracciabilita">🔒 CdS</span>` : '';
+                    
+                    return `<div class="intervention-item ${sel ? 'selected' : ''}" onclick="app.toggleIntervento('${i.id}')">
+                        <div style="font-weight:600; font-size:14px;">${i.descrizione}</div>
+                        <div class="item-meta" style="margin-top:5px;">
+                            <span class="badge badge-verbo">${i.verbo}</span>
+                            <span class="badge badge-gruppo">${i.gruppo}</span>
+                            ${moduli} ${cdS}
+                        </div>
+                    </div>`;
+                }).join('') || '<p class="empty">Nessun risultato.</p>';
+
+                this.aggiornaSelezioni();
+            }
+
+            cercaInterventi() { this.renderInterventi(); }
+            filtraInterventi() { this.renderInterventi(); }
+
+            toggleIntervento(id) {
+                const idx = this.recordCorrente.interventi_scelti.findIndex(i => i.id === id);
+                if (idx >= 0) this.recordCorrente.interventi_scelti.splice(idx, 1);
+                else this.recordCorrente.interventi_scelti.push({ id });
+                this.renderStep();
+            }
+
+            aggiornaSelezioni() {
+                document.getElementById('selected-count').textContent = this.recordCorrente.interventi_scelti.length;
+                const list = this.recordCorrente.interventi_scelti.map(s => {
+                    const def = this.catalogo.interventi.find(i => i.id === s.id);
+                    return `<span class="badge badge-gruppo" style="padding:8px 12px; margin:4px; font-size:13px; cursor:pointer;" onclick="app.toggleIntervento('${s.id}')">
+                        ${def?.descrizione || s.id} ✕
+                    </span>`;
+                }).join('');
+                document.getElementById('selected-list').innerHTML = list || '<span style="color:#999;">Nessuno selezionato.</span>';
+            }
+
+            // ==========================================
+            // STEP 3: LE NUOVE SCHEDE INTERVENTO
+            // ==========================================
+            renderSchede(outA3) {
+                const container = document.getElementById('schede-container');
+                if (this.recordCorrente.interventi_scelti.length === 0) {
+                    container.innerHTML = '<p class="empty">Nessun intervento selezionato. Torna indietro e scegline uno.</p>';
+                    return;
+                }
+
+                let html = '';
+                this.recordCorrente.interventi_scelti.forEach((intScelto, index) => {
+                    const intDef = this.catalogo.interventi.find(i => i.id === intScelto.id);
+                    if (!intDef) return;
+
+                    const isAperta = this.schedaAperta === intScelto.id;
+                    
+                    // Trova le domande per questo specifico intervento
+                    const domandeIntervento = outA3.domande_visibili.filter(d => 
+                        intDef.domande_richieste?.includes(d.id)
+                    );
+
+                    // Trova i materiali per questo specifico intervento
+                    const materialiRichiesti = intDef.materiali_richiesti || [];
+                    const materialiInseriti = this.recordCorrente.materiali.filter(m => m.intervento_id === intScelto.id);
+
+                    // Stato scheda
+                    let statoIcona = '⚪';
+                    let textStato = 'Da compilare';
+                    
+                    // Semplice logica per capire se è completa (possiamo raffinarla con A6)
+                    const domandeMancanti = domandeIntervento.filter(d => d.obbligatoria && !this.recordCorrente.risposte[d.id]);
+                    const materialiMancanti = materialiRichiesti.filter(mr => !materialiInseriti.some(mi => mi.tipologia_componente === mr.descrizione));
+
+                    if (domandeMancanti.length === 0 && materialiMancanti.length === 0) {
+                        statoIcona = '🟢';
+                        textStato = 'Completa';
+                    } else {
+                        statoIcona = '🟡';
+                        textStato = 'Incompleta';
+                    }
+
+                    html += `<div class="scheda-intervento">
+                        <div class="scheda-header" onclick="app.toggleScheda('${intScelto.id}')">
+                            <div>
+                                <h4>${statoIcona} ${intDef.descrizione}</h4>
+                                <span style="font-size:12px; color:#666;">${intDef.verbo} - ${textStato}</span>
+                            </div>
+                            <span>${isAperta ? '▲' : '▼'}</span>
+                        </div>
+                        <div class="scheda-body ${isAperta ? 'active' : ''}">
+                    `;
+
+                    // --- SEZIONE DOMANDE ---
+                    if (domandeIntervento.length > 0) {
+                        html += `<div class="scheda-section">
+                            <h5>❓ Domande Tecniche</h5>`;
+                        
+                        domandeIntervento.forEach(d => {
+                            const val = this.recordCorrente.risposte[d.id] || '';
+                            html += `<div style="margin-bottom:10px; display:flex; flex-direction:column;">
+                                <label style="font-size:13px; font-weight:600; margin-bottom:4px;">${d.testo} ${d.obbligatoria ? '<span style="color:red">*</span>' : ''}</label>`;
+                            
+                            if (d.tipo === 'boolean') {
+                                html += `<div style="display:flex; gap:15px;">
+                                    <label style="font-size:13px;"><input type="radio" name="${d.id}" value="true" ${val === 'true' ? 'checked' : ''} onchange="app.setRisposta('${d.id}', 'true')"> Sì</label>
+                                    <label style="font-size:13px;"><input type="radio" name="${d.id}" value="false" ${val === 'false' ? 'checked' : ''} onchange="app.setRisposta('${d.id}', 'false')"> No</label>
+                                </div>`;
+                            } else if (d.tipo === 'enum') {
+                                html += `<select onchange="app.setRisposta('${d.id}', this.value)" style="padding:6px; border-radius:4px; border:1px solid #ccc;">
+                                    <option value="">Seleziona...</option>
+                                    ${(d.opzioni || []).map(o => `<option value="${o}" ${val === o ? 'selected' : ''}>${o}</option>`).join('')}
+                                </select>`;
+                            } else {
+                                html += `<input type="${d.tipo === 'number' ? 'number' : 'text'}" value="${val}" onchange="app.setRisposta('${d.id}', this.value)" style="padding:6px; border-radius:4px; border:1px solid #ccc; width:100%; max-width:300px;">`;
+                            }
+                            html += `</div>`;
+                        });
+                        html += `</div>`;
+                    }
+
+                    // --- SEZIONE MATERIALI ---
+                    if (materialiRichiesti.length > 0) {
+                        html += `<div class="scheda-section">
+                            <h5>🔒 Componenti di Sicurezza (CdS)</h5>`;
+                        
+                        // Mostra quali sono richiesti
+                        html += `<p style="font-size:12px; color:#666; margin-bottom:10px;">Richiesti: ${materialiRichiesti.map(m => m.descrizione).join(', ')}</p>`;
+
+                        // Tabella dei materiali inseriti per questo intervento
+                        if (materialiInseriti.length > 0) {
+                            html += `<table class="cds-table">
+                                <tr><th>Tipologia</th><th>Seriale</th><th>P/N</th><th>Fornitore</th><th>N.Pezzi</th><th>Azioni</th></tr>`;
+                            materialiInseriti.forEach((m) => {
+                                const realIdx = this.recordCorrente.materiali.indexOf(m);
+                                html += `<tr>
+                                    <td>${m.tipologia_componente}</td><td>${m.serial_number}</td><td>${m.part_number}</td>
+                                    <td>${m.fornitore}</td><td>${m.n_pezzi}</td>
+                                    <td><button class="btn btn-sm btn-danger" onclick="app.rimuoviMateriale(${realIdx})">X</button></td>
+                                </tr>`;
+                            });
+                            html += `</table>`;
+                        } else {
+                            html += `<p style="font-size:13px; color:#e74c3c; margin-bottom:10px;">⚠️ Nessun materiale inserito per questo intervento.</p>`;
+                        }
+
+                        // Mini form per aggiungere un materiale a questo specifico intervento
+                        html += `<div style="background:#f8f9fa; padding:10px; border-radius:6px; display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                            <input type="text" id="mat_tipologia_${intScelto.id}" placeholder="Tipologia (es. Freno)" style="padding:5px; border:1px solid #ccc; border-radius:4px;">
+                            <input type="text" id="mat_seriale_${intScelto.id}" placeholder="Serial Number" style="padding:5px; border:1px solid #ccc; border-radius:4px;">
+                            <input type="text" id="mat_pn_${intScelto.id}" placeholder="Part Number" style="padding:5px; border:1px solid #ccc; border-radius:4px;">
+                            <input type="text" id="mat_fornitore_${intScelto.id}" placeholder="Fornitore" style="padding:5px; border:1px solid #ccc; border-radius:4px;">
+                            <input type="number" id="mat_pezzi_${intScelto.id}" placeholder="N. Pezzi" value="1" style="padding:5px; border:1px solid #ccc; border-radius:4px;">
+                            <input type="text" id="mat_produttore_${intScelto.id}" placeholder="Produttore" style="padding:5px; border:1px solid #ccc; border-radius:4px;">
+                            <div style="grid-column: 1 / -1; text-align:right;">
+                                <button class="btn btn-sm btn-primary" onclick="app.aggiungiMaterialeScheda('${intScelto.id}')">➕ Aggiungi CdS</button>
+                            </div>
+                        </div>`;
+                        html += `</div>`;
+                    }
+
+                    html += `</div></div>`;
+                });
+
+                container.innerHTML = html;
+            }
+
+            toggleScheda(id) {
+                this.schedaAperta = (this.schedaAperta === id) ? null : id;
+                const outA3 = calcolaDomande(this.recordCorrente, this.catalogo);
+                this.renderSchede(outA3);
+            }
+
+            setRisposta(id, val) {
+                this.recordCorrente.risposte[id] = val;
+                this.renderStep(); // Ricarica per aggiornare lo stato della scheda
+            }
+
+            aggiungiMaterialeScheda(interventoId) {
+                const m = {
+                    intervento_id: interventoId,
+                    tipologia_componente: document.getElementById(`mat_tipologia_${interventoId}`).value,
+                    serial_number: document.getElementById(`mat_seriale_${interventoId}`).value,
+                    part_number: document.getElementById(`mat_pn_${interventoId}`).value,
+                    fornitore: document.getElementById(`mat_fornitore_${interventoId}`).value,
+                    n_pezzi: parseInt(document.getElementById(`mat_pezzi_${interventoId}`).value) || 1,
+                    produttore: document.getElementById(`mat_produttore_${interventoId}`).value
+                };
+                if(!m.tipologia_componente || !m.serial_number) {
+                    this.notify("Tipologia e Seriale sono obbligatori", "error");
+                    return;
+                }
+                this.recordCorrente.materiali.push(m);
+                this.renderStep(); // Ricarica
+            }
+
+            rimuoviMateriale(idx) {
+                this.recordCorrente.materiali.splice(idx, 1);
+                this.renderStep();
+            }
+
+            // ==========================================
+            // STEP 4: RIEPILOGO
+            // ==========================================
+            renderRiepilogo(outA4) {
+                const container = document.getElementById('riepilogo-container');
+                let html = '';
+
+                html += `<div class="riepilogo-section"><h4>🏢 Commessa ${this.recordCorrente.commessa || 'N/D'}</h4>`;
+                html += `<p>Cliente: ${this.recordCorrente.anagrafica.cliente || '-'} | Supervisore: ${this.recordCorrente.tecnici.supervisore || '-'}</p></div>`;
+
+                html += `<div class="riepilogo-section"><h4>📄 Documenti DC (Pacchetto)</h4>`;
+                if (outA4.documenti_dc.length === 0) html += '<p class="empty">Nessuno.</p>';
+                outA4.documenti_dc.forEach(d => {
+                    html += `<span class="doc-tag ${d.completo ? 'obbligatorio' : 'mancante'}">${d.nome} ${d.completo ? '✅' : '⚠️'}</span>`;
+                });
+                html += `</div>`;
+
+                html += `<div class="riepilogo-section"><h4>🗄️ Documenti Interni</h4>`;
+                if (outA4.documenti_interni.length === 0) html += '<p class="empty">Nessuno.</p>';
+                outA4.documenti_interni.forEach(d => {
+                    html += `<span class="doc-tag interno">${d.nome} ${d.completo ? '✅' : '⚠️'}</span>`;
+                });
+                html += `</div>`;
+
+                container.innerHTML = html;
+            }
+
+            // ==========================================
+            // AZIONI FINALI
+            // ==========================================
+            async salvaBozza() {
+                if (!this.repository.dirHandle) { this.notify('Scegli una cartella prima di salvare!', 'error'); return; }
+                this.recordCorrente.stato = 'bozza';
+                const res = await this.repository.salvaRecord(this.recordCorrente);
+                if (res.success) { this.notify(`💾 Bozza salvata come ${res.nomeFile}`, 'success'); this.aggiornaProgetti(); }
+            }
+
+            async emettiDC() {
+                if (!this.repository.dirHandle) { this.notify('Scegli una cartella prima di emettere!', 'error'); return; }
+                if (this.guidaCorrente.stato !== 'pronto_per_emissione' && this.guidaCorrente.stato !== 'completo') {
+                    this.notify('⚠️ Non puoi emettere: ci sono dati mancanti o incoerenze.', 'error'); return;
+                }
+                if(confirm("Sei sicuro di voler emettere la DC? Lo stato passerà a 'emessa' e non sarà più modificabile.")) {
+                    this.recordCorrente.stato = 'emessa';
+                    const res = await this.repository.salvaRecord(this.recordCorrente);
+                    if (res.success) { this.notify(`✅ DC Emessa e salvata come ${res.nomeFile}`, 'success'); this.aggiornaProgetti(); this.renderStep(); }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new AppDC();
+            window.app.init();
+        });
+    </script>
+</body>
+</html>
