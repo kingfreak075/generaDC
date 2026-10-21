@@ -1,0 +1,526 @@
+{
+  "versione": "1.0.0",
+  "fonte": "Moduli Cantiere-DC al 2025-12-18.xlsx - Foglio Font",
+  "ultimo_aggiornamento": "2025-12-18",
+  "campi": {
+    "codice_esa": {
+      "label": "N. Impianto ESA",
+      "tipo": "text",
+      "placeholder": "Es: GUN20347",
+      "obbligatorio": true
+    },
+    "commessa": {
+      "label": "N. Commessa",
+      "tipo": "text",
+      "placeholder": "Es: Q2SA2848",
+      "obbligatorio": true
+    },
+    "matricola": {
+      "label": "N. Matricola",
+      "tipo": "text",
+      "placeholder": "Es: 83/87",
+      "obbligatorio": false
+    },
+    "fabbrica": {
+      "label": "N. Fabbrica",
+      "tipo": "text",
+      "placeholder": "Es: 1234",
+      "obbligatorio": false
+    },
+    "importo_lavori": {
+      "label": "Importo Lavori (€)",
+      "tipo": "number",
+      "placeholder": "Es: 5000",
+      "obbligatorio": false
+    },
+    "cliente": {
+      "label": "Cliente",
+      "tipo": "text",
+      "placeholder": "Es: COND. S. LUIGI",
+      "obbligatorio": true
+    },
+    "codice_cliente": {
+      "label": "Codice Cliente",
+      "tipo": "text",
+      "placeholder": "Es: 12345",
+      "obbligatorio": false
+    },
+    "proprietario": {
+      "label": "Proprietario dell'Impianto",
+      "tipo": "text",
+      "placeholder": "Es: COND. S. LUIGI",
+      "obbligatorio": false,
+      "hint": "Modificare ove non coincida con il campo Cliente"
+    },
+    "amministratore": {
+      "label": "Amministratore",
+      "tipo": "text",
+      "placeholder": "Es: Demaglie Francesca",
+      "obbligatorio": false
+    },
+    "telefono_amministratore": {
+      "label": "Tel. Amministratore",
+      "tipo": "text",
+      "placeholder": "Es: 333 1234567",
+      "obbligatorio": false
+    },
+    "indirizzo": {
+      "label": "Indirizzo dei Lavori",
+      "tipo": "text",
+      "placeholder": "Es: VIA S. LUIGI, 48, ARADEO (LE)",
+      "obbligatorio": true
+    },
+    "tipo_lavori": {
+      "label": "Tipo Lavori",
+      "tipo": "enum",
+      "opzioni": [
+        "nuovo impianto",
+        "trasformazione",
+        "ampliamento",
+        "manut. straordinaria",
+        "altro"
+      ],
+      "obbligatorio": true
+    },
+    "tipo_prodotto": {
+      "label": "Tipo di Prodotto",
+      "tipo": "enum",
+      "opzioni": [
+        "Impianto a modello",
+        "Unico prodotto",
+        "nessuno"
+      ],
+      "obbligatorio": true,
+      "hint": "Per manutenzione straordinaria selezionare 'nessuno'"
+    },
+    "tipo_impianto": {
+      "label": "Tipo Impianto",
+      "tipo": "enum",
+      "opzioni": [
+        "Ascensore a frizione",
+        "Ascensore oleodinamico",
+        "Montacarichi a frizione",
+        "Montacarichi oleodinamico",
+        "Montacarichi sotto i 25 Kg",
+        "Montascale",
+        "Piattaforma elettrica",
+        "Piattaforma oleodinamica",
+        "Scala mobile",
+        "Tappeto mobile"
+      ],
+      "obbligatorio": true
+    },
+    "direttiva_applicabile": {
+      "label": "Direttiva Applicabile",
+      "tipo": "enum",
+      "opzioni": [
+        "Direttiva Ascensori 2014/33/UE - DPR 23/2017",
+        "Direttiva Macchine 2006/42/CE - D.Lgs. 17/2010"
+      ],
+      "obbligatorio": true
+    },
+    "destinazione_locali": {
+      "label": "Destinazione Locali",
+      "tipo": "enum",
+      "opzioni": [
+        "Industriale",
+        "Civile",
+        "Commerciale",
+        "Altri usi"
+      ],
+      "obbligatorio": true
+    },
+    "norma_applicata": {
+      "label": "Norma Applicata",
+      "tipo": "enum",
+      "opzioni": [
+        "UNI 10411-1:2021",
+        "UNI 10411-1:2024",
+        "UNI 10411-2:2021",
+        "UNI 10411-2:2024",
+        "UNI 10411-3:2016",
+        "UNI 10411-4:2016",
+        "UNI 10411-5:2017",
+        "UNI 10411-6:2017",
+        "UNI 10411-11:2024",
+        "UNI 10411-12:2024",
+        "UNI 10411-15:2018",
+        "UNI EN 115-1:2017",
+        "UNI EN 115-2:2010",
+        "UNI EN 81-3:2008",
+        "UNI EN 81-20:2014",
+        "UNI EN 81-20:2020",
+        "UNI EN 81-21:2022",
+        "UNI EN 81-40:2009",
+        "UNI EN 81-41:2011"
+      ],
+      "obbligatorio": false
+    },
+    "anno_installazione": {
+      "label": "Anno di Installazione",
+      "tipo": "number",
+      "placeholder": "Es: 2022",
+      "obbligatorio": false
+    },
+    "portata": {
+      "label": "Portata (kg)",
+      "tipo": "number",
+      "placeholder": "Es: 325",
+      "obbligatorio": false
+    },
+    "corsa": {
+      "label": "Corsa (m)",
+      "tipo": "number",
+      "placeholder": "Es: 16.5",
+      "obbligatorio": false
+    },
+    "fermate": {
+      "label": "Numero Fermate",
+      "tipo": "number",
+      "placeholder": "Es: 3",
+      "obbligatorio": false
+    },
+    "velocita": {
+      "label": "Velocità (m/s)",
+      "tipo": "number",
+      "placeholder": "Es: 0.69",
+      "obbligatorio": false
+    },
+    "organismo_notificato_tipo": {
+      "label": "Organismo Notificato (Esame UE di Tipo)",
+      "tipo": "text",
+      "placeholder": "Es: IMQ S.p.A.",
+      "obbligatorio": false,
+      "hint": "Solo per impianti a modello"
+    },
+    "n_organismo_tipo": {
+      "label": "N. Identificativo Organismo (Tipo)",
+      "tipo": "text",
+      "placeholder": "Es: 0051",
+      "obbligatorio": false
+    },
+    "n_attestato_tipo": {
+      "label": "Modello / N. Attestato di Esame di Tipo",
+      "tipo": "text",
+      "placeholder": "Es: CA50.00767",
+      "obbligatorio": false
+    },
+    "organismo_notificato_finale": {
+      "label": "Organismo Notificato (Verifica Finale)",
+      "tipo": "text",
+      "placeholder": "Es: IMQ S.p.A.",
+      "obbligatorio": false
+    },
+    "n_organismo_finale": {
+      "label": "N. Identificativo Organismo (Verifica Finale)",
+      "tipo": "text",
+      "placeholder": "Es: 0051",
+      "obbligatorio": false
+    },
+    "n_attestato_finale": {
+      "label": "N. Attestato Rilasciato (Verifica Finale)",
+      "tipo": "text",
+      "placeholder": "Es: 12345",
+      "obbligatorio": false
+    },
+    "tecnico_dus": {
+      "label": "Tecnico Abilitato DUS (Titolo, Nome e Cognome)",
+      "tipo": "text",
+      "placeholder": "Es: Ing. Mario Rossi",
+      "obbligatorio": false
+    },
+    "ordine_ingegneri": {
+      "label": "Iscritto all'Ordine",
+      "tipo": "enum",
+      "opzioni": [
+        "Ingegneri",
+        "Architetti",
+        "Geometri",
+        "Periti Industriali"
+      ],
+      "obbligatorio": false
+    },
+    "provincia_ordine": {
+      "label": "Provincia Ordine",
+      "tipo": "text",
+      "placeholder": "Es: LE",
+      "obbligatorio": false
+    },
+    "n_iscrizione_ordine": {
+      "label": "N. Iscrizione all'Ordine",
+      "tipo": "text",
+      "placeholder": "Es: 12345",
+      "obbligatorio": false
+    },
+    "atto_autorizzativo": {
+      "label": "Atto Autorizzativo Lavori (tipo e n.)",
+      "tipo": "text",
+      "placeholder": "Es: SCIA n. 123/2024",
+      "obbligatorio": false
+    },
+    "data_inizio_lavori": {
+      "label": "Data Inizio Lavori",
+      "tipo": "date",
+      "obbligatorio": false
+    },
+    "data_fine_lavori": {
+      "label": "Data Fine Lavori",
+      "tipo": "date",
+      "obbligatorio": false
+    },
+    "data_verbale": {
+      "label": "Data Verbale",
+      "tipo": "date",
+      "obbligatorio": false
+    },
+    "data_cel": {
+      "label": "Data CEL",
+      "tipo": "date",
+      "obbligatorio": false
+    },
+    "supervisore": {
+      "label": "Supervisore dei Lavori (STF)",
+      "tipo": "text",
+      "placeholder": "Es: Gesmundo Giuseppe Gaetano",
+      "obbligatorio": false
+    },
+    "commerciale": {
+      "label": "Addetto Commerciale",
+      "tipo": "text",
+      "placeholder": "Es: Barnabà Angela",
+      "obbligatorio": false
+    },
+    "manutentore": {
+      "label": "Manutentore di Zona",
+      "tipo": "text",
+      "placeholder": "Es: Nessuno",
+      "obbligatorio": false
+    },
+    "contratto_servizio": {
+      "label": "Contratto di Servizio",
+      "tipo": "text",
+      "placeholder": "Es: Sì/No",
+      "obbligatorio": false
+    },
+    "tecnico1": {
+      "label": "Tecnico Esecutore 1",
+      "tipo": "text",
+      "placeholder": "Nome e cognome",
+      "obbligatorio": false
+    },
+    "tecnico2": {
+      "label": "Tecnico Esecutore 2",
+      "tipo": "text",
+      "placeholder": "Nome e cognome",
+      "obbligatorio": false
+    },
+    "rappresentante_cliente": {
+      "label": "Rappresentante Cliente",
+      "tipo": "text",
+      "placeholder": "Nome e cognome",
+      "obbligatorio": false
+    },
+    "subappaltatore1_ragione_sociale": {
+      "label": "Subappaltatore 1 - Ragione Sociale",
+      "tipo": "text",
+      "placeholder": "Es: Aesse Montaggio Ascensori S.a.s.",
+      "obbligatorio": false
+    },
+    "subappaltatore1_indirizzo": {
+      "label": "Subappaltatore 1 - Indirizzo",
+      "tipo": "text",
+      "placeholder": "Es: Via Fermi n.3, 40064 Ozzano dell'Emilia (BO)",
+      "obbligatorio": false
+    },
+    "subappaltatore1_cf": {
+      "label": "Subappaltatore 1 - C.F.",
+      "tipo": "text",
+      "placeholder": "Es: 04036201202",
+      "obbligatorio": false
+    },
+    "subappaltatore1_piva": {
+      "label": "Subappaltatore 1 - P.IVA",
+      "tipo": "text",
+      "placeholder": "Es: 04036201202",
+      "obbligatorio": false
+    },
+    "subappaltatore1_importo": {
+      "label": "Subappaltatore 1 - Importo Affidato (€)",
+      "tipo": "number",
+      "placeholder": "Es: 5000",
+      "obbligatorio": false
+    },
+    "subappaltatore1_resp_tecnico": {
+      "label": "Subappaltatore 1 - Responsabile Tecnico",
+      "tipo": "text",
+      "placeholder": "Nome e cognome",
+      "obbligatorio": false
+    },
+    "subappaltatore2_ragione_sociale": {
+      "label": "Subappaltatore 2 - Ragione Sociale",
+      "tipo": "text",
+      "placeholder": "Es: Ascensori Liftsystem",
+      "obbligatorio": false
+    },
+    "subappaltatore2_indirizzo": {
+      "label": "Subappaltatore 2 - Indirizzo",
+      "tipo": "text",
+      "placeholder": "Es: Via Gabara n.24, 93017 San Cataldo (CL)",
+      "obbligatorio": false
+    },
+    "subappaltatore2_cf": {
+      "label": "Subappaltatore 2 - C.F.",
+      "tipo": "text",
+      "placeholder": "Es: 02105270850",
+      "obbligatorio": false
+    },
+    "subappaltatore2_piva": {
+      "label": "Subappaltatore 2 - P.IVA",
+      "tipo": "text",
+      "placeholder": "Es: 02105270850",
+      "obbligatorio": false
+    },
+    "subappaltatore2_importo": {
+      "label": "Subappaltatore 2 - Importo Affidato (€)",
+      "tipo": "number",
+      "placeholder": "Es: 3000",
+      "obbligatorio": false
+    },
+    "subappaltatore2_resp_tecnico": {
+      "label": "Subappaltatore 2 - Responsabile Tecnico",
+      "tipo": "text",
+      "placeholder": "Nome e cognome",
+      "obbligatorio": false
+    }
+  },
+  "liste": {
+    "verbi_lavori": [
+      "Accorciamento",
+      "Adeguamento",
+      "Applicazione",
+      "Bilanciamento",
+      "Cambio",
+      "Disinfezione",
+      "Eliminazione",
+      "Fornitura",
+      "Installazione",
+      "Messa a terra",
+      "Modifica",
+      "Posa",
+      "Potenziamento",
+      "Pulizia",
+      "Rabbocco",
+      "Registrazione",
+      "Revisione",
+      "Riallineamento",
+      "Riavvolgimento",
+      "Ripristino",
+      "Rivestimento",
+      "Saldatura",
+      "Sigillatura",
+      "Sostituzione",
+      "Taratura",
+      "Verifica",
+      "Verniciatura"
+    ],
+    "gruppi": [
+      "Ammortizzatore",
+      "Ammortizzatori ad accumulazione di energia",
+      "Contatto operatore",
+      "Dispositivo di blocco porte di cabina fuori piano",
+      "Freno della macchina",
+      "Limitatori di velocità in salita",
+      "Limitatore",
+      "Limitatori di velocità",
+      "Paracadute",
+      "PESSRAL",
+      "Porta di piano",
+      "Serratura porta di piano",
+      "Serrature delle porte di piano",
+      "UCM elettrico",
+      "UCM idraulico",
+      "Valvola di blocco",
+      "Argano",
+      "Argano/cabina",
+      "Bottoniere/display",
+      "Cabina",
+      "Cabina/contrappeso",
+      "Cabina/QM",
+      "Centralina",
+      "Contrappeso",
+      "Fossa",
+      "Funi",
+      "Guide",
+      "Imp. Elettrico",
+      "Impianto completo",
+      "Limitatore",
+      "LM",
+      "Parapetto",
+      "Piano",
+      "Pistone",
+      "Porta",
+      "Porta auto",
+      "Porta man",
+      "QM",
+      "Sospensione",
+      "Traliccio",
+      "Vano",
+      "Vari"
+    ],
+    "tipi_verifica": [
+      "è prevista verifica straordinaria.",
+      "è previsto il collaudo.",
+      "non è previsto alcun controllo dell'Ente Notificato."
+    ],
+    "ruoli_firmatari": [
+      "Legale Rappresentante",
+      "Presidente del C.d.A.",
+      "Amministratore Delegato",
+      "Titolare"
+    ],
+    "tipi_firma": [
+      "Semplice",
+      "Semitotale",
+      "Totale",
+      "Nessun contratto"
+    ],
+    "filiali": [
+      "Filiale Alcamo (TP)",
+      "Filiale Bari",
+      "Filiale Bologna",
+      "Filiale Brindisi",
+      "Filiale PA",
+      "Filiale BO",
+      "Filiale BR-TA",
+      "Filiale Padova",
+      "Filiale Palermo",
+      "Filiale BA",
+      "Filiale Ragusa",
+      "Filiale PD-UD",
+      "Filiale Taranto",
+      "Filiale RG"
+    ],
+    "mapping_moduli_da_tracciabilita": {
+      "Ammortizzatore": "MOD032",
+      "Ammortizzatori": "MOD032",
+      "Contatto operatore": "MOD007",
+      "Dispositivo di blocco porte di cabina fuori piano": "MOD010",
+      "Freno della macchina": "MOD020",
+      "Limitatori di velocità in salita": "MOD008",
+      "Limitatore": "MOD008",
+      "Paracadute": "MOD034",
+      "PESSRAL": "MOD023",
+      "Porta di piano": "MOD013",
+      "Serratura porta di piano": "MOD013",
+      "Serrature delle porte di piano": "MOD013",
+      "UCM elettrico": "MOD028",
+      "UCM idraulico": "MOD028",
+      "Valvola di blocco": "MOD031"
+    }
+  },
+  "note": {
+    "tipo_prodotto": "Se il tipo lavori è 'manut. straordinaria', il tipo prodotto deve essere 'nessuno'",
+    "norma_applicata": "Le norme UNI 10411-* sono per ammodernamenti, le UNI EN 81-* per nuovi impianti. UNI EN 115-* per scale/tappeti mobili",
+    "organismo_notificato": "Per 'Impianto a modello' è obbligatorio indicare l'Organismo Notificato che ha rilasciato l'attestato di esame CE di tipo"
+  }
+}

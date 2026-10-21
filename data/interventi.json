@@ -1,0 +1,238 @@
+// js/data/interventi.json (versione semplificata - estratta da Excel)
+{
+  "version": "1.0",
+  "data_estrazione": "2026-09-01",
+  "catalogo": {
+    "verbi": [
+      { "id": "installazione", "label": "Installazione" },
+      { "id": "sostituzione", "label": "Sostituzione" },
+      { "id": "revisione", "label": "Revisione" },
+      { "id": "verniciatura", "label": "Verniciatura" },
+      { "id": "messa_a_terra", "label": "Messa a terra" },
+      { "id": "accorciamento", "label": "Accorciamento" },
+      { "id": "registrazione", "label": "Registrazione" },
+      { "id": "pulizia", "label": "Pulizia" },
+      { "id": "bilanciamento", "label": "Bilanciamento" },
+      { "id": "riavvolgimento", "label": "Riavvolgimento" },
+      { "id": "ripristino", "label": "Ripristino" },
+      { "id": "applicazione", "label": "Applicazione" },
+      { "id": "potenziamento", "label": "Potenziamento" },
+      { "id": "eliminazione", "label": "Eliminazione" },
+      { "id": "fornitura", "label": "Fornitura" },
+      { "id": "salda", "label": "Saldatura" },
+      { "id": "sigillatura", "label": "Sigillatura" },
+      { "id": "taratura", "label": "Taratura" },
+      { "id": "verifica", "label": "Verifica" },
+      { "id": "posa", "label": "Posa" },
+      { "id": "modifica", "label": "Modifica" },
+      { "id": "cambio", "label": "Cambio" },
+      { "id": "adeguamento", "label": "Adeguamento" }
+    ],
+    "gruppi": [
+      { "id": "argano", "label": "Argano" },
+      { "id": "cabina", "label": "Cabina" },
+      { "id": "qm", "label": "Quadro di Manovra (QM)" },
+      { "id": "centralina", "label": "Centralina" },
+      { "id": "porta", "label": "Porte" },
+      { "id": "funi", "label": "Funi" },
+      { "id": "guide", "label": "Guide" },
+      { "id": "fossa", "label": "Fossa" },
+      { "id": "contrappeso", "label": "Contrappeso" },
+      { "id": "pistone", "label": "Pistone" },
+      { "id": "limitatore", "label": "Limitatore" },
+      { "id": "impianto_elettrico", "label": "Impianto Elettrico" },
+      { "id": "lm", "label": "Locale Macchine" },
+      { "id": "piano", "label": "Piano" }
+    ],
+    "moduli": {
+      "MOD001": { "nome": "Sostituzione quadro di manovra", "template": "MOD001.docx" },
+      "MOD003": { "nome": "Sostituzione bottoniere", "template": "MOD003.docx" },
+      "MOD004": { "nome": "Sostituzione quadro generale", "template": "MOD004.docx" },
+      "MOD005": { "nome": "Installazione illuminazione", "template": "MOD005.docx" },
+      "MOD006": { "nome": "Installazione/Sostituzione citofono", "template": "MOD006.docx" },
+      "MOD007": { "nome": "Dispositivo ritorno al piano", "template": "MOD007.docx" },
+      "MOD008": { "nome": "Sostituzione limitatore velocità", "template": "MOD008.docx" },
+      "MOD010": { "nome": "Sostituzione porte automatiche", "template": "MOD010.docx" },
+      "MOD011": { "nome": "Sostituzione porte a battente", "template": "MOD011.docx" },
+      "MOD013": { "nome": "Sostituzione serrature porte di piano", "template": "MOD013.docx" },
+      "MOD014": { "nome": "Sostituzione porte di cabina", "template": "MOD014.docx" },
+      "MOD015": { "nome": "Sostituzione operatore porte", "template": "MOD015.docx" },
+      "MOD017": { "nome": "Sostituzione argano", "template": "MOD017.docx" },
+      "MOD020": { "nome": "Sostituzione gruppo freno", "template": "MOD020.docx" },
+      "MOD021": { "nome": "Sostituzione cinghie di trazione", "template": "MOD021.docx" },
+      "MOD022": { "nome": "Sostituzione funi di trazione", "template": "MOD022.docx" },
+      "MOD024": { "nome": "Sostituzione cabina", "template": "MOD024.docx" },
+      "MOD025": { "nome": "Installazione parapetto", "template": "MOD025.docx" },
+      "MOD026": { "nome": "Rivestimento cabina", "template": "MOD026.docx" },
+      "MOD027": { "nome": "Sostituzione centralina", "template": "MOD027.docx" },
+      "MOD028": { "nome": "Kit emendamento A3", "template": "MOD028.docx" },
+      "MOD030": { "nome": "Sostituzione pistone", "template": "MOD030.docx" },
+      "MOD031": { "nome": "Sostituzione valvola di caduta", "template": "MOD031.docx" },
+      "MOD032": { "nome": "Sostituzione ammortizzatori", "template": "MOD032.docx" },
+      "MOD034": { "nome": "Sostituzione paracadute", "template": "MOD034.docx" },
+      "MOD035": { "nome": "Sostituzione arcata cabina", "template": "MOD035.docx" },
+      "MOD036": { "nome": "Installazione guide", "template": "MOD036.docx" },
+      "MOD037": { "nome": "Sostituzione contrappeso", "template": "MOD037.docx" },
+      "MOD038": { "nome": "Installazione carter protezione", "template": "MOD038.docx" },
+      "MOD039": { "nome": "Sostituzione pattini", "template": "MOD039.docx" },
+      "MOD040": { "nome": "Installazione scala accesso fossa", "template": "MOD040.docx" },
+      "P06_Mod5": { "nome": "Report Commessa", "template": "P06_Mod5.docx" },
+      "P06_Mod6": { "nome": "Dichiarazione di Conformità", "template": "P06_Mod6.docx" },
+      "P06_Mod7": { "nome": "Comunicazione messa in esercizio", "template": "P06_Mod7.docx" },
+      "P06_Mod9": { "nome": "Lettera consegna documenti", "template": "P06_Mod9.docx" },
+      "P06_Mod10": { "nome": "Dichiarazione di Conformità (manutenzione)", "template": "P06_Mod10.docx" },
+      "DCR": { "nome": "Dichiarazione Compatibilità Ricambi", "template": "DCR.docx" },
+      "DQM": { "nome": "Dichiarazione Compatibilità Q.M.", "template": "DQM.docx" },
+      "DFPT": { "nome": "Dichiarazione Funi-Puleggia-Tubo flessibile", "template": "DFPT.docx" },
+      "DTF": { "nome": "Dichiarazione Tiro Funi", "template": "DTF.docx" },
+      "DRF": { "nome": "Dichiarazione Rispondenza Freno", "template": "DRF.docx" }
+    },
+    "interventi": [
+      // ... oltre 300 interventi estratti dal file Excel
+      // Esempio di alcuni interventi:
+      {
+        "id": 1,
+        "descrizione": "Sostituzione argano di trazione completo di telaio",
+        "verbo": "sostituzione",
+        "oggetto": "argano di trazione completo di telaio",
+        "gruppo": "argano",
+        "tipo_commessa": "ammodernamento",
+        "moduli": ["MOD017"],
+        "moduli_condizionali": ["DRF"],
+        "tracciabilita": "Freno della macchina",
+        "normativa": "UNI 10411-1:2024",
+        "domande_template": "argano"
+      },
+      {
+        "id": 2,
+        "descrizione": "Sostituzione argano di trazione MRL completo di freno",
+        "verbo": "sostituzione",
+        "oggetto": "argano di trazione MRL completo di freno",
+        "gruppo": "argano",
+        "tipo_commessa": "ammodernamento",
+        "moduli": ["MOD017"],
+        "moduli_condizionali": ["DRF"],
+        "tracciabilita": "Freno della macchina",
+        "normativa": "UNI 10411-1:2024",
+        "domande_template": "argano_mrl"
+      },
+      {
+        "id": 3,
+        "descrizione": "Sostituzione argano di trazione",
+        "verbo": "sostituzione",
+        "oggetto": "argano di trazione",
+        "gruppo": "argano",
+        "tipo_commessa": "ammodernamento",
+        "moduli": ["MOD017"],
+        "moduli_condizionali": ["DRF"],
+        "tracciabilita": "",
+        "normativa": "UNI 10411-1:2024",
+        "domande_template": "argano"
+      },
+      {
+        "id": 42,
+        "descrizione": "Sostituzione puleggia di frizione calettata su argano",
+        "verbo": "sostituzione",
+        "oggetto": "puleggia di frizione calettata su argano",
+        "gruppo": "argano",
+        "tipo_commessa": "ammodernamento",
+        "moduli": [],
+        "moduli_condizionali": ["DFPT"],
+        "tracciabilita": "",
+        "normativa": "UNI 10411-1:2024",
+        "domande_template": "puleggia"
+      },
+      {
+        "id": 201,
+        "descrizione": "Sostituzione centralina oleodinamica",
+        "verbo": "sostituzione",
+        "oggetto": "centralina oleodinamica",
+        "gruppo": "centralina",
+        "tipo_commessa": "ammodernamento",
+        "moduli": ["MOD027"],
+        "moduli_condizionali": ["DQM"],
+        "tracciabilita": "",
+        "normativa": "UNI 10411-2:2024",
+        "domande_template": "centralina"
+      },
+      {
+        "id": 517,
+        "descrizione": "Installazione kit emendamento A3 per impedire i movimenti incontrollati della cabina",
+        "verbo": "installazione",
+        "oggetto": "kit emendamento A3",
+        "gruppo": "qm",
+        "tipo_commessa": "ammodernamento",
+        "moduli": ["MOD028"],
+        "moduli_condizionali": [],
+        "tracciabilita": "UCM elettrico",
+        "normativa": "UNI 10411-2:2024",
+        "domande_template": "ucm"
+      },
+      {
+        "id": 522,
+        "descrizione": "Installazione circuito per impedire il movimento delle porte cabina",
+        "verbo": "installazione",
+        "oggetto": "circuito per impedire il movimento delle porte cabina",
+        "gruppo": "qm",
+        "tipo_commessa": "ammodernamento",
+        "moduli": [],
+        "moduli_condizionali": ["DM37 Quadro Manovra"],
+        "tracciabilita": "",
+        "normativa": "UNI 10411-2:2024",
+        "domande_template": "circuito_porte"
+      }
+    ],
+    "domande_templates": {
+      "argano": [
+        { "id": "marca_argano", "testo": "Marca del nuovo argano", "tipo": "text" },
+        { "id": "modello_argano", "testo": "Modello del nuovo argano", "tipo": "text" },
+        { "id": "matricola_argano", "testo": "Matricola del nuovo argano", "tipo": "text" },
+        { "id": "certificato_ce", "testo": "Il nuovo argano è dotato di certificato CE?", "tipo": "boolean" },
+        { "id": "ha_sostituito_freno", "testo": "È stato sostituito anche il freno?", "tipo": "boolean", "condizionale": true, "condizione": "certificato_ce === 'si'" },
+        { "id": "ha_verificato_tiro_funi", "testo": "È stata effettuata la verifica del tiro funi?", "tipo": "boolean" }
+      ],
+      "argano_mrl": [
+        { "id": "marca_argano", "testo": "Marca del nuovo argano MRL", "tipo": "text" },
+        { "id": "modello_argano", "testo": "Modello del nuovo argano MRL", "tipo": "text" },
+        { "id": "matricola_argano", "testo": "Matricola del nuovo argano MRL", "tipo": "text" },
+        { "id": "certificato_ce_freno", "testo": "Il freno è certificato come componente di sicurezza?", "tipo": "boolean" },
+        { "id": "ha_verificato_illuminazione", "testo": "L'illuminazione del locale macchine è conforme al punto 5.2.1.4 della EN 81-20?", "tipo": "boolean" }
+      ],
+      "centralina": [
+        { "id": "marca_centralina", "testo": "Marca della nuova centralina", "tipo": "text" },
+        { "id": "modello_centralina", "testo": "Modello della nuova centralina", "tipo": "text" },
+        { "id": "ha_sostituito_olio", "testo": "È stato sostituito l'olio idraulico?", "tipo": "boolean" },
+        { "id": "ha_sostituito_tubo", "testo": "È stato sostituito il tubo flessibile di mandata?", "tipo": "boolean", "condizionale": true, "condizione": "ha_sostituito_olio === 'si'" },
+        { "id": "pressione_lavoro", "testo": "Pressione di lavoro della centralina (bar)", "tipo": "number" }
+      ],
+      "ucm": [
+        { "id": "marca_ucm", "testo": "Marca del dispositivo UCM", "tipo": "text" },
+        { "id": "modello_ucm", "testo": "Modello del dispositivo UCM", "tipo": "text" },
+        { "id": "serial_ucm", "testo": "Numero di serie del dispositivo UCM", "tipo": "text" },
+        { "id": "certificato_ce", "testo": "Il dispositivo UCM è marcato CE?", "tipo": "boolean" }
+      ],
+      "puleggia": [
+        { "id": "diametro_puleggia", "testo": "Diametro della nuova puleggia (mm)", "tipo": "number" },
+        { "id": "n_gole", "testo": "Numero di gole della puleggia", "tipo": "number" },
+        { "id": "stesso_diametro", "testo": "La nuova puleggia ha lo stesso diametro primitivo di quella sostituita?", "tipo": "boolean" }
+      ],
+      "circuito_porte": [
+        { "id": "ha_circuito", "testo": "È stato installato il circuito di sicurezza per le porte?", "tipo": "boolean" },
+        { "id": "tensione_circuito", "testo": "Tensione di alimentazione del circuito (V)", "tipo": "number" }
+      ]
+    },
+    "documenti_obbligatori": [
+      "Verbale di ultimazione impianto",
+      "Dichiarazione di Conformità",
+      "Dichiarazione requisiti tecnici"
+    ],
+    "mapping_moduli_condizionali": {
+      "DRF": "Dichiarazione Rispondenza Freno",
+      "DFPT": "Dichiarazione Funi-Puleggia-Tubo flessibile",
+      "DQM": "Dichiarazione di Compatibilità Q.M.",
+      "DCR": "Dichiarazione di Compatibilità Ricambi",
+      "DTF": "Dichiarazione di Tiro Funi",
+      "DM37 Quadro Manovra": "Dichiarazione di Compatibilità Q.M."
+    }
+  }
+}
